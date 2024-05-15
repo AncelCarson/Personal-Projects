@@ -1,0 +1,945 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key attr.name="pParent" attr.type="string" for="node" id="d3" />
+  <key attr.name="layer" attr.type="long" for="node" id="d2" />
+  <key attr.name="height" attr.type="long" for="node" id="d1" />
+  <key attr.name="width" attr.type="long" for="node" id="d0" />
+  <graph edgedefault="directed">
+    <node id="Root">
+      <data key="d0">48</data>
+      <data key="d1">0</data>
+      <data key="d2">0</data>
+    </node>
+    <node id="Mobs">
+      <data key="d0">12</data>
+      <data key="d2">1</data>
+      <data key="d1">15</data>
+      <data key="d3">Root</data>
+    </node>
+    <node id="Creeper">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">23</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Phantom">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">21</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Skeleton">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">19</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Zombie">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">15</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Spider">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">18</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Chicken">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">26</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Cod">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">25</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Cow">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">24</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Wolf">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">16</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Skeleton Skull">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">21</data>
+      <data key="d3">Phantom</data>
+    </node>
+    <node id="Dark Prismarine">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">26</data>
+      <data key="d3">Chicken</data>
+    </node>
+    <node id="Plants">
+      <data key="d0">15</data>
+      <data key="d2">1</data>
+      <data key="d1">0</data>
+      <data key="d3">Root</data>
+    </node>
+    <node id="Blocks">
+      <data key="d0">11</data>
+      <data key="d2">1</data>
+      <data key="d1">37</data>
+      <data key="d3">Root</data>
+    </node>
+    <node id="Grass Block">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">42</data>
+      <data key="d3">Blocks</data>
+    </node>
+    <node id="Bamboo">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">42</data>
+      <data key="d3">Grass Block</data>
+    </node>
+    <node id="Bamboo Shoot">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">14</data>
+      <data key="d3">Plants</data>
+    </node>
+    <node id="Granite Wall">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">14</data>
+      <data key="d3">Bamboo Shoot</data>
+    </node>
+    <node id="Black Banner">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">14</data>
+      <data key="d3">Granite Wall</data>
+    </node>
+    <node id="Yellow Wool">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d1">14</data>
+      <data key="d3">Black Banner</data>
+    </node>
+    <node id="Brown Glazed Terracotta">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">42</data>
+      <data key="d3">Bamboo</data>
+    </node>
+    <node id="Craftable">
+      <data key="d0">10</data>
+      <data key="d2">1</data>
+      <data key="d1">27</data>
+      <data key="d3">Root</data>
+    </node>
+    <node id="Diamond Block">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">32</data>
+      <data key="d3">Craftable</data>
+    </node>
+    <node id="N/A">
+      <data key="d0">1</data>
+      <data key="d2">12</data>
+      <data key="d1">1</data>
+      <data key="d3">Magenta Banner</data>
+    </node>
+    <node id="Sand">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">39</data>
+      <data key="d3">Blocks</data>
+    </node>
+    <node id="White Carpet">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">39</data>
+      <data key="d3">Sand</data>
+    </node>
+    <node id="Andesite Stairs">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">39</data>
+      <data key="d3">White Carpet</data>
+    </node>
+    <node id="Spruce Trapdoor">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d1">39</data>
+      <data key="d3">Andesite Stairs</data>
+    </node>
+    <node id="TNT">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">27</data>
+      <data key="d3">Craftable</data>
+    </node>
+    <node id="Flower Pot">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">28</data>
+      <data key="d3">Mossy Stone Brick Slab</data>
+    </node>
+    <node id="Beacon">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d1">28</data>
+      <data key="d3">Flower Pot</data>
+    </node>
+    <node id="Pink Carpet">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d1">28</data>
+      <data key="d3">Beacon</data>
+    </node>
+    <node id="Dandelion">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">27</data>
+      <data key="d3">TNT</data>
+    </node>
+    <node id="Bone">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">27</data>
+      <data key="d3">Dandelion</data>
+    </node>
+    <node id="Oak Leaves">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">6</data>
+      <data key="d3">Plants</data>
+    </node>
+    <node id="Purple Glazed Terracotta">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">6</data>
+      <data key="d3">Oak Leaves</data>
+    </node>
+    <node id="Oak Trapdoor">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">6</data>
+      <data key="d3">Purple Glazed Terracotta</data>
+    </node>
+    <node id="Prismarine Stairs">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d1">6</data>
+      <data key="d3">Oak Trapdoor</data>
+    </node>
+    <node id="Barrel">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">35</data>
+      <data key="d3">Craftable</data>
+    </node>
+    <node id="Mossy Stone Brick Stairs">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">35</data>
+      <data key="d3">Barrel</data>
+    </node>
+    <node id="Blue Wool">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">35</data>
+      <data key="d3">Mossy Stone Brick Stairs</data>
+    </node>
+    <node id="Tall Grass">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">1</data>
+      <data key="d3">Plants</data>
+    </node>
+    <node id="Pink Glazed Terracotta">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">1</data>
+      <data key="d3">Tall Grass</data>
+    </node>
+    <node id="Green Shulker Box">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">1</data>
+      <data key="d3">Pink Glazed Terracotta</data>
+    </node>
+    <node id="Oak Pressure Plate">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d1">1</data>
+      <data key="d3">Green Shulker Box</data>
+    </node>
+    <node id="Stonecutter">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d1">1</data>
+      <data key="d3">Oak Pressure Plate</data>
+    </node>
+    <node id="Jukebox">
+      <data key="d0">1</data>
+      <data key="d2">7</data>
+      <data key="d1">1</data>
+      <data key="d3">Stonecutter</data>
+    </node>
+    <node id="Gray Glazed Terracotta">
+      <data key="d0">1</data>
+      <data key="d2">8</data>
+      <data key="d1">1</data>
+      <data key="d3">Jukebox</data>
+    </node>
+    <node id="White Wool">
+      <data key="d0">1</data>
+      <data key="d2">9</data>
+      <data key="d1">1</data>
+      <data key="d3">Gray Glazed Terracotta</data>
+    </node>
+    <node id="Spruce Fence">
+      <data key="d0">1</data>
+      <data key="d2">10</data>
+      <data key="d1">1</data>
+      <data key="d3">White Wool</data>
+    </node>
+    <node id="Magenta Banner">
+      <data key="d0">1</data>
+      <data key="d2">11</data>
+      <data key="d1">1</data>
+      <data key="d3">Spruce Fence</data>
+    </node>
+    <node id="Quartz Stairs">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">19</data>
+      <data key="d3">Skeleton</data>
+    </node>
+    <node id="Magenta Glazed Terracotta">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d1">19</data>
+      <data key="d3">Quartz Stairs</data>
+    </node>
+    <node id="Melon">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">8</data>
+      <data key="d3">Plants</data>
+    </node>
+    <node id="Melon Stem">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">7</data>
+      <data key="d3">Plants</data>
+    </node>
+    <node id="Stone Brick Slab">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">7</data>
+      <data key="d3">Melon Stem</data>
+    </node>
+    <node id="Birch Log">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">4</data>
+      <data key="d3">Potatoes</data>
+    </node>
+    <node id="Birch Leaves">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">13</data>
+      <data key="d3">Plants</data>
+    </node>
+    <node id="Grass">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">10</data>
+      <data key="d3">Plants</data>
+    </node>
+    <node id="Light Gray Sheep">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">22</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="White Sheep">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">17</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Redstone Dust">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">17</data>
+      <data key="d3">White Sheep</data>
+    </node>
+    <node id="Snow">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">38</data>
+      <data key="d3">Blocks</data>
+    </node>
+    <node id="Coal">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d1">38</data>
+      <data key="d3">Snow</data>
+    </node>
+    <node id="Pig">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d1">20</data>
+      <data key="d3">Mobs</data>
+    </node>
+    <node id="Stone">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">37</data>
+    </node>
+    <node id="Acacia Sapling">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Stone</data>
+      <data key="d1">37</data>
+    </node>
+    <node id="Stripped Spruce Log">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Acacia Sapling</data>
+      <data key="d1">37</data>
+    </node>
+    <node id="Blue Glazed Terracotta">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Stripped Spruce Log</data>
+      <data key="d1">37</data>
+    </node>
+    <node id="Jungle Trapdoor">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d3">Blue Glazed Terracotta</data>
+      <data key="d1">37</data>
+    </node>
+    <node id="Coal Ore">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">45</data>
+    </node>
+    <node id="Pink Tulip">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Coal Ore</data>
+      <data key="d1">45</data>
+    </node>
+    <node id="Lilly Pad">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Pink Tulip</data>
+      <data key="d1">45</data>
+    </node>
+    <node id="Poppy">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Plants</data>
+      <data key="d1">5</data>
+    </node>
+    <node id="Fletching Table">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Poppy</data>
+      <data key="d1">5</data>
+    </node>
+    <node id="Jungle Button">
+      <data key="d0">2</data>
+      <data key="d2">2</data>
+      <data key="d3">Craftable</data>
+      <data key="d1">28</data>
+    </node>
+    <node id="Mossy Stone Brick Slab">
+      <data key="d0">2</data>
+      <data key="d2">3</data>
+      <data key="d3">Jungle Button</data>
+      <data key="d1">28</data>
+    </node>
+    <node id="Jungle Sapling">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Gray Wool</data>
+      <data key="d1">12</data>
+    </node>
+    <node id="Lime Wool">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d3">Jungle Sapling</data>
+      <data key="d1">12</data>
+    </node>
+    <node id="Raw Mutton">
+      <data key="d0">1</data>
+      <data key="d2">7</data>
+      <data key="d3">Lime Wool</data>
+      <data key="d1">12</data>
+    </node>
+    <node id="Dark Oak Plank">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Craftable</data>
+      <data key="d1">33</data>
+    </node>
+    <node id="Arrows">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Dark Oak Plank</data>
+      <data key="d1">33</data>
+    </node>
+    <node id="Acacia Planks">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Craftable</data>
+      <data key="d1">36</data>
+    </node>
+    <node id="Dark Oak Fence">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Acacia Planks</data>
+      <data key="d1">36</data>
+    </node>
+    <node id="Black Concrete">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Dark Oak Fence</data>
+      <data key="d1">36</data>
+    </node>
+    <node id="Red Sandstone">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Black Concrete</data>
+      <data key="d1">36</data>
+    </node>
+    <node id="Dirt">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d3">Red Sandstone</data>
+      <data key="d1">36</data>
+    </node>
+    <node id="Crafting Table">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Craftable</data>
+      <data key="d1">34</data>
+    </node>
+    <node id="Green Concrete Powder">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Crafting Table</data>
+      <data key="d1">34</data>
+    </node>
+    <node id="Emerald">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Green Concrete Powder</data>
+      <data key="d1">34</data>
+    </node>
+    <node id="End Stone Brick">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Craftable</data>
+      <data key="d1">30</data>
+    </node>
+    <node id="Brick Stairs">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">End Stone Brick</data>
+      <data key="d1">30</data>
+    </node>
+    <node id="Stone Tool">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Creeper</data>
+      <data key="d1">23</data>
+    </node>
+    <node id="Emerald Block">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Craftable</data>
+      <data key="d1">31</data>
+    </node>
+    <node id="Andesite">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">47</data>
+    </node>
+    <node id="Bone Block">
+      <data key="d0">2</data>
+      <data key="d2">3</data>
+      <data key="d3">Carrots</data>
+      <data key="d1">11</data>
+    </node>
+    <node id="Yellow Concrete Powder">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Bone Block</data>
+      <data key="d1">11</data>
+    </node>
+    <node id="Damaged Anvil">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Yellow Concrete Powder</data>
+      <data key="d1">11</data>
+    </node>
+    <node id="String">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d3">Damaged Anvil</data>
+      <data key="d1">11</data>
+    </node>
+    <node id="Gray Wool">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Bone Block</data>
+      <data key="d1">12</data>
+    </node>
+    <node id="Jungle Leaves">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Plants</data>
+      <data key="d1">9</data>
+    </node>
+    <node id="Spruce Sapling">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Plants</data>
+      <data key="d1">3</data>
+    </node>
+    <node id="Shulker Box">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Spruce Sapling</data>
+      <data key="d1">3</data>
+    </node>
+    <node id="Nether Brick Stairs">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Shulker Box</data>
+      <data key="d1">3</data>
+    </node>
+    <node id="Jungle Log">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Nether Brick Stairs</data>
+      <data key="d1">3</data>
+    </node>
+    <node id="Iron Block">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Granite</data>
+      <data key="d1">43</data>
+    </node>
+    <node id="Granite">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">43</data>
+    </node>
+    <node id="Lantern">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Iron Block</data>
+      <data key="d1">43</data>
+    </node>
+    <node id="Nether Brick Wall">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Lantern</data>
+      <data key="d1">43</data>
+    </node>
+    <node id="Magenta Carpet">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d3">Nether Brick Wall</data>
+      <data key="d1">43</data>
+    </node>
+    <node id="Shulker Shell">
+      <data key="d0">1</data>
+      <data key="d2">7</data>
+      <data key="d3">Magenta Carpet</data>
+      <data key="d1">43</data>
+    </node>
+    <node id="Gravel">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">41</data>
+    </node>
+    <node id="Tall Seagrass">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Plants</data>
+      <data key="d1">0</data>
+    </node>
+    <node id="Smooth Quartz Slab">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Tall Seagrass</data>
+      <data key="d1">0</data>
+    </node>
+    <node id="Iron Bars">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Smooth Quartz Slab</data>
+      <data key="d1">0</data>
+    </node>
+    <node id="Lime Carpet">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Iron Bars</data>
+      <data key="d1">0</data>
+    </node>
+    <node id="Granite Slab">
+      <data key="d0">1</data>
+      <data key="d2">6</data>
+      <data key="d3">Lime Carpet</data>
+      <data key="d1">0</data>
+    </node>
+    <node id="Light Gray Wool">
+      <data key="d0">1</data>
+      <data key="d2">7</data>
+      <data key="d3">Granite Slab</data>
+      <data key="d1">0</data>
+    </node>
+    <node id="Sugar Cane">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Plants</data>
+      <data key="d1">2</data>
+    </node>
+    <node id="Diorite">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">44</data>
+    </node>
+    <node id="Birch Pressure Plate">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Diorite</data>
+      <data key="d1">44</data>
+    </node>
+    <node id="Potatoes">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Plants</data>
+      <data key="d1">4</data>
+    </node>
+    <node id="Clay">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">46</data>
+    </node>
+    <node id="Iron Ore">
+      <data key="d0">1</data>
+      <data key="d2">2</data>
+      <data key="d3">Blocks</data>
+      <data key="d1">40</data>
+    </node>
+    <node id="Cyan Concrete Powder">
+      <data key="d0">1</data>
+      <data key="d2">3</data>
+      <data key="d3">Iron Ore</data>
+      <data key="d1">40</data>
+    </node>
+    <node id="Purple Shulker Box">
+      <data key="d0">1</data>
+      <data key="d2">4</data>
+      <data key="d3">Cyan Concrete Powder</data>
+      <data key="d1">40</data>
+    </node>
+    <node id="Carrot">
+      <data key="d0">1</data>
+      <data key="d2">5</data>
+      <data key="d3">Purple Shulker Box</data>
+      <data key="d1">40</data>
+    </node>
+    <node id="Carrots">
+      <data key="d0">2</data>
+      <data key="d2">2</data>
+      <data key="d3">Plants</data>
+      <data key="d1">11</data>
+    </node>
+    <edge source="Root" target="Mobs" />
+    <edge source="Root" target="Craftable" />
+    <edge source="Root" target="Blocks" />
+    <edge source="Root" target="Plants" />
+    <edge source="Mobs" target="Creeper" />
+    <edge source="Mobs" target="Phantom" />
+    <edge source="Mobs" target="Skeleton" />
+    <edge source="Mobs" target="Zombie" />
+    <edge source="Mobs" target="Spider" />
+    <edge source="Mobs" target="Chicken" />
+    <edge source="Mobs" target="Cod" />
+    <edge source="Mobs" target="Cow" />
+    <edge source="Mobs" target="Wolf" />
+    <edge source="Mobs" target="Light Gray Sheep" />
+    <edge source="Mobs" target="White Sheep" />
+    <edge source="Mobs" target="Pig" />
+    <edge source="Creeper" target="Stone Tool" />
+    <edge source="Phantom" target="Skeleton Skull" />
+    <edge source="Skeleton" target="Quartz Stairs" />
+    <edge source="Chicken" target="Dark Prismarine" />
+    <edge source="Cow" target="N/A" />
+    <edge source="Skeleton Skull" target="N/A" />
+    <edge source="Plants" target="Bamboo" />
+    <edge source="Plants" target="Bamboo Shoot" />
+    <edge source="Plants" target="Dandelion" />
+    <edge source="Plants" target="Oak Leaves" />
+    <edge source="Plants" target="Tall Grass" />
+    <edge source="Plants" target="Melon" />
+    <edge source="Plants" target="Melon Stem" />
+    <edge source="Plants" target="Birch Log" />
+    <edge source="Plants" target="Birch Leaves" />
+    <edge source="Plants" target="Grass" />
+    <edge source="Plants" target="Poppy" />
+    <edge source="Plants" target="Jungle Leaves" />
+    <edge source="Plants" target="Spruce Sapling" />
+    <edge source="Plants" target="Tall Seagrass" />
+    <edge source="Plants" target="Sugar Cane" />
+    <edge source="Plants" target="Potatoes" />
+    <edge source="Plants" target="Carrots" />
+    <edge source="Blocks" target="Dark Prismarine" />
+    <edge source="Blocks" target="Grass Block" />
+    <edge source="Blocks" target="Sand" />
+    <edge source="Blocks" target="Snow" />
+    <edge source="Blocks" target="Stone" />
+    <edge source="Blocks" target="Coal Ore" />
+    <edge source="Blocks" target="Dirt" />
+    <edge source="Blocks" target="Andesite" />
+    <edge source="Blocks" target="Granite" />
+    <edge source="Blocks" target="Gravel" />
+    <edge source="Blocks" target="Diorite" />
+    <edge source="Blocks" target="Clay" />
+    <edge source="Blocks" target="Iron Ore" />
+    <edge source="Grass Block" target="Bamboo" />
+    <edge source="Bamboo" target="Brown Glazed Terracotta" />
+    <edge source="Bamboo Shoot" target="Granite Wall" />
+    <edge source="Granite Wall" target="Black Banner" />
+    <edge source="Black Banner" target="Yellow Wool" />
+    <edge source="Yellow Wool" target="N/A" />
+    <edge source="Craftable" target="Diamond Block" />
+    <edge source="Craftable" target="TNT" />
+    <edge source="Craftable" target="Barrel" />
+    <edge source="Craftable" target="Jungle Button" />
+    <edge source="Craftable" target="Dark Oak Plank" />
+    <edge source="Craftable" target="Acacia Planks" />
+    <edge source="Craftable" target="Crafting Table" />
+    <edge source="Craftable" target="End Stone Brick" />
+    <edge source="Craftable" target="Emerald Block" />
+    <edge source="Diamond Block" target="N/A" />
+    <edge source="Sand" target="White Carpet" />
+    <edge source="White Carpet" target="Andesite Stairs" />
+    <edge source="Andesite Stairs" target="Spruce Trapdoor" />
+    <edge source="TNT" target="Flower Pot" />
+    <edge source="TNT" target="Dandelion" />
+    <edge source="Flower Pot" target="Beacon" />
+    <edge source="Beacon" target="Pink Carpet" />
+    <edge source="Pink Carpet" target="N/A" />
+    <edge source="Dandelion" target="Bone" />
+    <edge source="Oak Leaves" target="Purple Glazed Terracotta" />
+    <edge source="Purple Glazed Terracotta" target="Oak Trapdoor" />
+    <edge source="Oak Trapdoor" target="Prismarine Stairs" />
+    <edge source="Prismarine Stairs" target="N/A" />
+    <edge source="Barrel" target="Mossy Stone Brick Stairs" />
+    <edge source="Mossy Stone Brick Stairs" target="Blue Wool" />
+    <edge source="Blue Wool" target="N/A" />
+    <edge source="Tall Grass" target="Pink Glazed Terracotta" />
+    <edge source="Pink Glazed Terracotta" target="Green Shulker Box" />
+    <edge source="Green Shulker Box" target="Oak Pressure Plate" />
+    <edge source="Oak Pressure Plate" target="Stonecutter" />
+    <edge source="Stonecutter" target="Jukebox" />
+    <edge source="Jukebox" target="Gray Glazed Terracotta" />
+    <edge source="Gray Glazed Terracotta" target="White Wool" />
+    <edge source="White Wool" target="Spruce Fence" />
+    <edge source="Spruce Fence" target="Magenta Banner" />
+    <edge source="Magenta Banner" target="N/A" />
+    <edge source="Quartz Stairs" target="Magenta Glazed Terracotta" />
+    <edge source="Magenta Glazed Terracotta" target="N/A" />
+    <edge source="Melon" target="N/A" />
+    <edge source="Melon Stem" target="Stone Brick Slab" />
+    <edge source="Stone Brick Slab" target="N/A" />
+    <edge source="Birch Log" target="N/A" />
+    <edge source="Grass" target="N/A" />
+    <edge source="Light Gray Sheep" target="N/A" />
+    <edge source="White Sheep" target="Redstone Dust" />
+    <edge source="Redstone Dust" target="N/A" />
+    <edge source="Snow" target="Coal" />
+    <edge source="Snow" target="Bone" />
+    <edge source="Pig" target="Dandelion" />
+    <edge source="Stone" target="Acacia Sapling" />
+    <edge source="Acacia Sapling" target="Stripped Spruce Log" />
+    <edge source="Stripped Spruce Log" target="Blue Glazed Terracotta" />
+    <edge source="Blue Glazed Terracotta" target="Jungle Trapdoor" />
+    <edge source="Jungle Trapdoor" target="N/A" />
+    <edge source="Coal Ore" target="Pink Tulip" />
+    <edge source="Pink Tulip" target="Lilly Pad" />
+    <edge source="Lilly Pad" target="N/A" />
+    <edge source="Poppy" target="Fletching Table" />
+    <edge source="Jungle Button" target="Mossy Stone Brick Slab" />
+    <edge source="Mossy Stone Brick Slab" target="Flower Pot" />
+    <edge source="Mossy Stone Brick Slab" target="Jungle Sapling" />
+    <edge source="Jungle Sapling" target="Lime Wool" />
+    <edge source="Lime Wool" target="Raw Mutton" />
+    <edge source="Dark Oak Plank" target="Arrows" />
+    <edge source="Acacia Planks" target="Dark Oak Fence" />
+    <edge source="Dark Oak Fence" target="Black Concrete" />
+    <edge source="Black Concrete" target="Red Sandstone" />
+    <edge source="Red Sandstone" target="Dirt" />
+    <edge source="Dirt" target="N/A" />
+    <edge source="Crafting Table" target="Green Concrete Powder" />
+    <edge source="Green Concrete Powder" target="Emerald" />
+    <edge source="End Stone Brick" target="Brick Stairs" />
+    <edge source="Brick Stairs" target="N/A" />
+    <edge source="Emerald Block" target="N/A" />
+    <edge source="Andesite" target="N/A" />
+    <edge source="Bone Block" target="Yellow Concrete Powder" />
+    <edge source="Bone Block" target="Gray Wool" />
+    <edge source="Yellow Concrete Powder" target="Damaged Anvil" />
+    <edge source="Damaged Anvil" target="String" />
+    <edge source="Gray Wool" target="Jungle Sapling" />
+    <edge source="Jungle Leaves" target="N/A" />
+    <edge source="Spruce Sapling" target="Shulker Box" />
+    <edge source="Shulker Box" target="Nether Brick Stairs" />
+    <edge source="Nether Brick Stairs" target="Jungle Log" />
+    <edge source="Jungle Log" target="N/A" />
+    <edge source="Iron Block" target="Lantern" />
+    <edge source="Granite" target="Iron Block" />
+    <edge source="Lantern" target="Nether Brick Wall" />
+    <edge source="Nether Brick Wall" target="Magenta Carpet" />
+    <edge source="Magenta Carpet" target="Shulker Shell" />
+    <edge source="Gravel" target="Yellow Wool" />
+    <edge source="Gravel" target="Yellow Concrete Powder" />
+    <edge source="Tall Seagrass" target="Smooth Quartz Slab" />
+    <edge source="Smooth Quartz Slab" target="Iron Bars" />
+    <edge source="Iron Bars" target="Lime Carpet" />
+    <edge source="Lime Carpet" target="Granite Slab" />
+    <edge source="Granite Slab" target="Light Gray Wool" />
+    <edge source="Sugar Cane" target="N/A" />
+    <edge source="Diorite" target="Birch Pressure Plate" />
+    <edge source="Birch Pressure Plate" target="N/A" />
+    <edge source="Potatoes" target="Birch Log" />
+    <edge source="Iron Ore" target="Cyan Concrete Powder" />
+    <edge source="Cyan Concrete Powder" target="Purple Shulker Box" />
+    <edge source="Purple Shulker Box" target="Carrot" />
+    <edge source="Carrots" target="Bone Block" />
+  </graph>
+</graphml>

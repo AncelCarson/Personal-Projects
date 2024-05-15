@@ -1,0 +1,107 @@
+ID,Item,Stock,Unit,UnitType,Category
+0,Almond (Extract),0,,,Baking
+1,Apple,0,,,Fruit
+2,Apple Juice,0,,,Juice
+3,Bacon (Bits),0,,,Addative
+4,Bacon (Slices),0,,,Meat
+5,Baking Powder,0,,,Baking
+6,Baking Soda,0,,,Baking
+7,Bell Pepper (Green),0,,,Vegetable
+8,Bell Pepper (Orange),0,,,Vegetable
+9,Bell Pepper (Red),0,,,Vegetable
+10,Bell Pepper (Yellow),0,,,Vegetable
+11,Broccoli (Fresh),0,,,Vegetable
+12,Broccoli (Frozen),0,,,Vegetable
+13,Butter (Flavor),0,,,Baking
+14,Butter (Salted),0,,,Baking
+15,Butter (Unsalted),0,,,Baking
+16,Buttrermilk,0,,,Baking
+17,Carrot,0,,,Vegetable
+18,Cellery,0,,,Vegetable
+19,Cheese Sauce,0,,,
+20,Cheese Wiz,0,,,
+21,Chicken Breast,0,,,Meat
+22,Chicken Broth,0,,,
+23,Chicken Legs,0,,,Meat
+24,Chicken Thigh,0,,,Meat
+25,Chocolate (Dark),0,,,
+26,Chocolate (Milk),0,,,
+27,"Chocolate (Chips, Semi Sweet)",0,,,
+28,Chocolate (Syrup),0,,,
+29,Cinnamon (Ground),0,,,Spice
+30,Cinnamon (Stick),0,,,Spice
+31,Condensed Chedar Cheese Soup,0,,,Soup
+32,Cream of Chicken Soup,0,,,Soup
+33,Cream of Mushroom Soup,0,,,Soup
+34,Cream of Potato Soup,0,,,Soup
+35,Crescent Rolls,0,,,
+35,Egg,0,,,
+35,Evaporative Milk,0,,,
+35,Flower,0,,,
+35,Garlic (Minced),0,,,Vegetable
+36,Garlic (Whole),0,,,Vegetable
+37,Ground Beef,0,,,Meat
+38,Ham (Cubed),0,,,Meat
+39,Ham (Diced),0,,,Meat
+40,Kidney Beans,0,,,
+41,Lemon,0,,,Fruit
+42,Lemon Juice,0,,,Fruit
+43,Lime,0,,,Fruit
+44,Lime Juice,0,,,Fruit
+45,Macaroni & Cheese,0,,,
+46,Mexican Style Tomotoes,0,,,
+47,Milk,0,,,
+48,Mushroom,0,,,Vegetable
+49,Navy Beans,0,,,
+50,Noodles (Bowtie),0,,,
+51,Noodles (Couscous),0,,,
+52,Noodles (Egg),0,,,
+53,Noodles (Fetuchini),0,,,
+54,Noodles (Lasagna),0,,,
+55,Noodles (Macaroni),0,,,
+56,Noodles (Orzo),0,,,
+57,Noodles (Penne),0,,,
+58,Noodles (Rice),0,,,
+59,Noodles (Spaghetti),0,,,
+60,Noodles (Udon),0,,,
+61,Nutmeg,0,,,
+62,Oil (Canola),0,,,
+63,Oil (Olive),0,,,
+64,Oil (Vegetable),0,,,
+65,Onion (Red),0,,,Vegetable
+66,Onion (Red),0,,,Vegetable
+67,Onion (Shalot),0,,,Vegetable
+68,Onion (Yellow),0,,,Vegetable
+69,Orange,0,,,
+70,Orange Juice,0,,,
+71,Pepper,0,,,
+72,Pineapple,0,,,
+73,Pineapple Jiuce,0,,,
+74,Pinto Beans and Jalapenos,0,,,
+75,Potato (Frozen Shredded),0,,,Vegetable
+76,Potato (Russett),0,,,Vegetable
+77,Potato (Sweet),0,,,Vegetable
+78,Rice (Arborio),0,,,
+79,Rice (Long Grain),0,,,
+80,Rice (Royal Blend),0,,,
+81,Rice (White),0,,,
+82,Salt (Course),0,,,Spice
+83,Salt (Flake),0,,,Spice
+84,Salt (Kosher),0,,,Spice
+85,Salt (Sea),0,,,Spice
+86,Salt (Table),0,,,Spice
+87,Shredded Cheese (Cheddar),0,,,Dairy
+88,Shredded Cheese (Four),0,,,Dairy
+89,Shredded Cheese (Mexican),0,,,Dairy
+90,Shredded Cheese (Mozarella),0,,,Dairy
+91,Shredded Cheese (Peamesean),0,,,Dairy
+92,Shredded Cheese (Swiss),0,,,Dairy
+93,Sugar (Brown),0,,,Baking
+94,Sugar (Granulated),0,,,Baking
+95,Sugar (Light Brown),0,,,Baking
+96,Sugar (Powdered),0,,,Baking
+97,Taco Seasoning,0,,,
+98,Vanilla (Bean),0,,,
+99,Vanilla (Extract),0,,,
+100,Velveta Cheese,0,,,
+101,Whole Kernal Corn,0,,,
