@@ -43,3 +43,7 @@ Thumbs.db
 # Document Files #
 ######################
 .pdf
+
+# Specific Files #
+######################
+users.csv
