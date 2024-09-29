@@ -1,22 +1,27 @@
-import matplotlib.tri as tri
-import matplotlib.pyplot as plt
-import matplotlib.cm as cm
-import numpy as np
+# pylint: disable=invalid-name,bad-indentation,non-ascii-name
+# -*- coding: utf-8 -*-
 
+"""Generates a topographical map as an image"""
+
+import numpy as np
+from matplotlib import cm
+from matplotlib import tri
+from  matplotlib import pyplot as plt
 
 #-----------------------------------------------------------------------------
 # Analytical test function
 #-----------------------------------------------------------------------------
-def function_z(x, y):
-    r1 = np.sqrt((0.5 - x)**2 + (0.5 - y)**2)
-    theta1 = np.arctan2(0.5 - x, 0.5 - y)
-    r2 = np.sqrt((-x - 0.2)**2 + (-y - 0.2)**2)
-    theta2 = np.arctan2(-x - 0.2, -y - 0.2)
-    z = -(2 * (np.exp((r1 / 10)**2) - 1) * 30. * np.cos(7. * theta1) +
+def function_z(x_1, y_1):
+    """Z given x an y."""
+    r1 = np.sqrt((0.5 - x_1)**2 + (0.5 - y_1)**2)
+    theta1 = np.arctan2(0.5 - x_1, 0.5 - y_1)
+    r2 = np.sqrt((-x_1 - 0.2)**2 + (-y_1 - 0.2)**2)
+    theta2 = np.arctan2(-x_1 - 0.2, -y_1 - 0.2)
+    z_1 = -(2 * (np.exp((r1 / 10)**2) - 1) * 30. * np.cos(7. * theta1) +
           (np.exp((r2 / 10)**2) - 1) * 30. * np.cos(11. * theta2) +
-          0.7 * (x**2 + y**2))
-    return np.random.randn(400)
-    return (np.max(z) - z) / (np.max(z) - np.min(z))
+          0.7 * (x_1**2 + y_1**2))
+    # return np.random.randn(400) #Used for random plot generation
+    return (np.max(z_1) - z_1) / (np.max(z_1) - np.min(z_1))
 
 #-----------------------------------------------------------------------------
 # Creating a Triangulation

@@ -1,8 +1,13 @@
+# pylint: disable=invalid-name,bad-indentation,non-ascii-name,line-too-long
+# -*- coding: utf-8 -*-
+
+"""Discord bot used for Character moment in D&D Game"""
+
 #importing the discord module
 import os
-import discord
 from time import sleep
 from dotenv import load_dotenv
+import discord
 
 #creating a new discord client for us to use. cool_bot be the client
 load_dotenv()
@@ -17,6 +22,7 @@ client=discord.Client(intents=intents)
 @client.event
 #when the bot started running, we may print its name, id etc
 async def on_ready():
+    """Prints message to Discordd saying the bot has logged in."""
     print('Logged in')
     print("Username: ",end='')
     print(client.user.name)
@@ -25,11 +31,17 @@ async def on_ready():
 @client.event
 #when the bot gets the message this method gets triggered
 async def on_message(message):
+    """Checks for new messages in Discord and runs commands if criteria are met.
+    
+    If the user sends the message "Bot Check" the bot will confirm it is running. If the message
+    is "/Run Diagnostics" the bot will send a series of messages as if they were text on a 
+    diagnostics terminal.
+    """
     if message.author.id == client.user.id:
         return
     #message starts with hi or hello then print these
     if message.content.startswith('Bot Check'):
-        await message.channel.send('Hello {0.author.mention} Bot is Running'.format(message))
+        await message.channel.send(f'Hello {message.author.mention} Bot is Running')
         await message.channel.send('Send "/Run diagnostics" to begin output')
     #when the message with help then do this
     elif message.content.startswith('/Run diagnostics'):
