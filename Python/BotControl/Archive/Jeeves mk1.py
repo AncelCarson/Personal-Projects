@@ -1,3 +1,6 @@
+# pylint: disable=all
+# -*- coding: utf-8 -*-
+
 ### Ancel Carson
 ### Created: 8/1/2023
 ### UPdated: 25/1/2023

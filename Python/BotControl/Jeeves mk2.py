@@ -1,3 +1,6 @@
+# pylint: disable=invalid-name,bad-indentation,non-ascii-name,unused-import
+# -*- coding: utf-8 -*-
+
 ### Ancel Carson
 ### Created: 8/1/2023
 ### UPdated: 8/1/2023
@@ -5,12 +8,37 @@
 ### Python command line, Notepad, IDLE
 ### Jeeves.py
 
+"""A discord bot that functions as an interface to various other programs.
+
+Jeeves is the discord interface to a series of other programs to assist in various
+tasks. The program will manage the discord specific interactions as well as pass
+requests onto the TextHandler
+
+Variables:
+    TOKEN (str): Discord bot connection Id
+    GUILD (int): Server Id for connection
+    intents (object): Initilizing details for discord bot
+    client (?): Client Connection Credentialls
+    activeUsers (list -> int):
+    activeThreads (list -> thread):
+
+Functions:
+   on_ready: Actions to perform on successful startup
+   on_reaction_add: Actions to perform when a reaction is added
+   on_member_join: Actions to perform when a new member joins
+   on_message: Actions to perform when a message is recieved
+   getAnswers: sends messages from user to the TextHandler
+   response_get: Gets responses from user to messages sent by the bot
+   sender: Sends messages to Discord
+"""
+
 # Libraries
 import os
-import discord
 import asyncio
 from time import sleep
 from datetime import datetime
+
+import discord
 from dotenv import load_dotenv
 from TextHandler import TextHandler
 
@@ -31,6 +59,7 @@ activeThreads = []
 #================   On Bot Boot      ================
 @client.event
 async def on_ready():
+    """Prints to terminal that the bot is connected properly."""
     guild = client.get_guild(GUILD)
     print(
         f'{client.user} is connected to:',
@@ -40,7 +69,9 @@ async def on_ready():
 #================   On Reaction Add     ================
 @client.event
 async def on_reaction_add(reaction, user):
-    if user == client.user: return
+    """Sets user role based on reaction selection."""
+    if user == client.user:
+        return
     message = reaction.message
 
     if message.guild is None: #this is a dm message
@@ -58,36 +89,41 @@ async def on_reaction_add(reaction, user):
 #================   On Member Join      ================
 @client.event
 async def on_member_join(member):
+    """Requests title assignment when a new member joins."""
     with TextHandler() as textHandler:
         text = await textHandler.messageIn(f"/DM {member.name}")
         await member.create_dm()
         await member.dm_channel.send(text[0][0])
-        msg = await member.dm_channel.send("Please react below weather you are Male 'M' or Female 'F'")
+        message = "Please react below whether you are Male 'M' or Female 'F'"
+        msg = await member.dm_channel.send(message)
         await msg.add_reaction('\U0001F1F2') #M
         await msg.add_reaction('\U0001F1EB') #F
 
 #================   On Message      ================
 @client.event
 async def on_message(message):
-    id = message.author.id
+    """Recieves in message from Discord and passes it to the TextHandler."""
+    UserId = message.author.id
 
-    # Check that Jeeves does nto respond to his own message. 
-    if id == client.user.id:
+    # Check that Jeeves does nto respond to his own message.
+    if UserId == client.user.id:
         return
 
     if message.content.startswith('Bot Check'):
-        await message.channel.send('Hello {0.author.mention} Bot is Running'.format(message))
+        await message.channel.send(f'Hello {message.author.mention} Bot is Running')
         await message.channel.send('Jeeves is awaiting your command.')
         return
 
-    if id not in activeUsers:
+    if UserId not in activeUsers:
         for role in message.author.roles:
-            if role.id == 1061842845981491221: title = "Sir"
-            elif role.id == 1061842851220160664: title = "Madam"
+            if role.id == 1061842845981491221:
+                title = "Sir"
+            elif role.id == 1061842851220160664:
+                title = "Madam"
             else: title = "...you"
 
-        activeUsers.append(id)
-        activeThreads.append(TextHandler(id,title,"Discord"))
+        activeUsers.append(UserId)
+        activeThreads.append(TextHandler(UserId,title,"Discord"))
 
 
     userIndex = activeUsers.index(id)
@@ -105,6 +141,7 @@ async def on_message(message):
 #================   Non Event Functions      ================
 
 async def getAnswers(text, message):
+    """Recieves answers from the TextHandler to be sent to the user."""
     answers = []
     if len(text) == 0:
         return answers
@@ -115,12 +152,14 @@ async def getAnswers(text, message):
             try:
                 answers.append(await response_get(message, line[0], 10))
             except asyncio.TimeoutError:
-                missedText = "I am sorry, I did not catch all of that can you please start again from the beginning?"
+                missedText = "I am sorry, I did not catch all of that " \
+                            "can you please start again from the beginning?"
                 await sender(message, missedText)
                 return []
     return answers
 
 async def response_get(ctx, message: str,timeout: float):
+    """Handles interactions that require responses to messages sent by the bot."""
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel
 
@@ -130,6 +169,7 @@ async def response_get(ctx, message: str,timeout: float):
     return response.content
 
 async def sender(ctx, message: str):
+    """Sends Messages to Discord"""
     await ctx.channel.send(message)
 
 #finnaly we have to run our bot. previous stuffs are defining the functions of the bot
