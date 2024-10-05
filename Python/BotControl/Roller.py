@@ -21,7 +21,7 @@ Example:
    -> If the lowest die will then be dropped from the list.
    -> This will be repeated 5 more times for a tital of 6 sets of rolls.
 
-Methods:
+Methods: 
    main: Driver of the program
    roller: Text parser and processor
    wordCheck: Checks for keywords
@@ -32,10 +32,12 @@ Methods:
    bigExplode: Infinitely rerolls a die if the maximum number is rolled
    reroll: Generates a new roll based on given criteria
    rerollInf: Infinitely generates a new roll based on given criteria
+   performOperation: Does math to a set of rolls
    menu: The list of available options
 """
 
 # Libraries
+from re import search
 from numpy.random import randint as rn
 
 # Main Function
@@ -43,8 +45,6 @@ def main():
    """Driver of the program"""
    while True:
       diceRoll = input("What should I Roll?\n")
-      if diceRoll == "Stats":
-         diceRoll = "6 4d6 r1 dr1"
       diceRoll = diceRoll.split(" ")
       output = roller(diceRoll)
       print(output)
@@ -57,157 +57,79 @@ def roller(request: str):
    Parameters:
       request: Rolls the user wants to see
 
-   Variables:
-      total (int): Final Result to Return
-      count (int): Current loop iteration number
-      first (bool): Verifies if this is the First Iteration
-      mathIt (bool): Calculate Rolls Together
-      rolling (bool): Main foor loop when rolling or modifying the roll list
-      operation (char): Operation to Perform in Calculation Addition first to sum first roll set
-      outputStack (list -> str): A list of the action performend while rolling
-      newOperation (char): Next operation to perform when combining sets of rolls
-
    Returns:
-      outputStack
+      outputStack: A string to show the steps the program took
    """
    request = wordCheck(request)
    total = 0
    count = 0
    first = True
    mathIt = False
-   rolling = True
    operation = "+"
    outputStack = ''
    newOperation = "+"
    request.append("@")
-   while rolling:
+
+   actionDict = {
+      "drh": lambda line: (
+         [0] if int(line[3:]) >= len(rolls)
+         else dropHigh(rolls, int(line[3:]))
+      ),
+      "dr": lambda line: (
+         [0] if int(line[2:]) >= len(rolls)
+         else dropLow(rolls, int(line[2:]))
+      ),
+      "ei": lambda line: bigExplode(rolls, int(line[2:]), die, 0),
+      "e": lambda line: explode(rolls, int(line[1:]), die),
+      "kl": lambda line: (
+         dropHigh(rolls, len(rolls) - int(line[2:])) if (len(rolls) - int(line[2:])) > 0
+         else rolls
+      ),
+      "k": lambda line: (
+         dropLow(rolls, len(rolls) - int(line[1:])) if (len(rolls) - int(line[1:])) > 0
+         else rolls
+      ),
+      "ma": lambda line: reroll(rolls, int(line[2:]), die, "above"),
+      "mi": lambda line: reroll(rolls, int(line[2:]), die, "below"),
+      "ri": lambda line: rerollInf(rolls, int(line[1:]), die, "same"),
+      "r": lambda line: reroll(rolls, int(line[1:]), die, "same"),
+      "ima": lambda line: rerollInf(rolls, int(line[2:]), die, "above"),
+      "imi": lambda line: rerollInf(rolls, int(line[2:]), die, "below"),
+   }
+
+   while count < len(request):
       line = request[count]
+      temp = search(r'\D+', line)
+      action = temp.group(0).lower() if temp else " "
       count += 1
-      if count == len(request):
-         rolling = False
-      if line in ("help","Help","HELP","h","H"):
+      if line.lower() in ("help","h"):
          return menu()
       if line == "@":
          mathIt = True
-      elif "drh" in line:          #Drop the Highest Dice
-         num = int(line[3:])
-         if num == len(rolls):
-            rolls = [0]
-            continue
-         rolls = dropHigh(rolls, num)
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "dr" in line:         #Drop the Lowest Dice
-         num = int(line[2:])
-         if num == len(rolls):
-            rolls = [0]
-            continue
-         rolls = dropLow(rolls, num)
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
+      elif action in actionDict:
+         rolls = actionDict[action](line)
+         outputStack += f"{rolls}\n"
       elif "d" in line:          #Dice to Roll
          [num,die] = line.split('d')
          [rolls,die] = roll(num,die)#Dice Results
-         outputStack += (str(rolls) + "\n")
+         outputStack += f"{rolls}\n"
          # outputStack.append(list(rolls))
-      elif "ei" in line:         #Explode Dice Infinitely
-         num = int(line[2:])
-         bigExplode(rolls, num, die, 0)
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "e" in line:          #Explode Dice
-         num = int(line[1:])
-         explode(rolls, num, die)
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "kl" in line:         #Keep the Lowest Dice
-         num = len(rolls) - int(line[2:])
-         if num == 0:
-            continue
-         rolls = dropHigh(rolls, num)
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "k" in line:          #Keep the Highest Dice
-         num = len(rolls) - int(line[1:])
-         if num == 0:
-            continue
-         rolls = dropLow(rolls, num)
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "ma" in line:          #Reroll any Die Above the Maximum
-         num = int(line[2:])
-         rolls = reroll(rolls, num, die, "above")
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "mi" in line:          #Reroll any Die Below the Minimum
-         num = int(line[2:])
-         rolls = reroll(rolls, num, die, "below")
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "ri" in line:          #Reroll any Die of a Certain Value
-         num = int(line[2:])
-         rolls = rerollInf(rolls, num, die, "same")
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "r" in line:          #Reroll any Die of a Certain Value
-         num = int(line[1:])
-         rolls = reroll(rolls, num, die, "same")
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "ima" in line:          #Reroll any Die Above the Maximum
-         num = int(line[2:])
-         rolls = rerollInf(rolls, num, die, "above")
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
-      elif "imi" in line:          #Reroll any Die Below the Minimum
-         num = int(line[2:])
-         rolls = rerollInf(rolls, num, die, "below")
-         outputStack += (str(rolls) + "\n")
-         # outputStack.append(list(rolls))
-         continue
       elif line in ["+","-","/","*"]:
                                  #Operation Request
-         newOperation = line    #Saves Operation Request
+         newOperation = line     #Saves Operation Request
          mathIt = True           #signifies the next item will need to be calculated
       else:
          if first:
             commands = request[1:]
-            for _ in range(int(line)-1):
-               for command in commands:
-                  request.append(command)
+            request.extend(command for _ in range(int(line) - 1) for command in commands)
          else:
             rolls = [int(line)]
-            outputStack += (str(int(line)) + "\n")
-            # outputStack.append(list([int(line)]))
+            outputStack += f"{int(line)}\n"
 
       if mathIt:
-         rollTotal = 0
-         for die in rolls:
-            rollTotal += die
-         if operation == "-":
-            total = total - rollTotal
-         elif operation == "/":
-            if rollTotal == 0:
-               pass
-            else:
-               total = total / rollTotal
-         elif operation == "*":
-            total = total * rollTotal
-         else:
-            total = total + rollTotal
-         outputStack += (str(total) + "\n")
-         # outputStack.append(int(total))
+         rollTotal = sum(rolls)
+         total = performOperation(total, rollTotal, operation)
+         outputStack += f"{total}\n"
          operation = newOperation
          if line == "@":
             total = 0
@@ -343,9 +265,6 @@ def reroll(rolls: list[int], num: int, die: int, direction: str):
             [[rolls[count]],_] = roll(1, die)
    return rolls
 
-
-
-
 def rerollInf(rolls: list[int], num: int, die: int, direction: str):
    """Rerolls any roll based on a certain citeria recursively.
    
@@ -375,6 +294,25 @@ def rerollInf(rolls: list[int], num: int, die: int, direction: str):
    if deeper:
       rolls = rerollInf(rolls, num, die, direction)
    return rolls
+
+def performOperation(total: float, rollTotal: int, operation: str):
+   """Performs mathmatical operations between different rolls or numbers.
+   
+   Parameters:
+      total: Overall total from the start of the loop
+      rollTotal: The sum of the most recent roll
+      operation: Which mathmaatical operation is being performed
+
+   Returns:
+      total: An updated overall total from the start of the loop
+   """
+   if operation == "-":
+      return total - rollTotal
+   if operation == "/":
+      return total if rollTotal == 0 else total / rollTotal
+   if operation == "*":
+      return total * rollTotal
+   return total + rollTotal
 
 # def menu():
 #    return[["|               Command Menu               |"],
