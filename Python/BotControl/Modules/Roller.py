@@ -93,10 +93,10 @@ def roller(request: str):
       ),
       "ma": lambda line: reroll(rolls, int(line[2:]), die, "above"),
       "mi": lambda line: reroll(rolls, int(line[2:]), die, "below"),
-      "ri": lambda line: rerollInf(rolls, int(line[1:]), die, "same"),
+      "ri": lambda line: rerollInf(rolls, int(line[2:]), die, "same"),
       "r": lambda line: reroll(rolls, int(line[1:]), die, "same"),
-      "ima": lambda line: rerollInf(rolls, int(line[2:]), die, "above"),
-      "imi": lambda line: rerollInf(rolls, int(line[2:]), die, "below"),
+      "mai": lambda line: rerollInf(rolls, int(line[3:]), die, "above"),
+      "mii": lambda line: rerollInf(rolls, int(line[3:]), die, "below"),
    }
 
    while count < len(request):
