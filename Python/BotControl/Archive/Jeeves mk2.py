@@ -40,7 +40,7 @@ from datetime import datetime
 
 import discord
 from dotenv import load_dotenv
-from TextHandler import TextHandler
+from TextHandler_mk2 import TextHandler
 
 #creating a new discord client for us to use. cool_bot be the client
 load_dotenv()
@@ -126,7 +126,7 @@ async def on_message(message):
         activeThreads.append(TextHandler(UserId,title,"Discord"))
 
 
-    userIndex = activeUsers.index(id)
+    userIndex = activeUsers.index(UserId)
     thread = activeThreads[userIndex]
 
     text = thread.messageIn(message.content)

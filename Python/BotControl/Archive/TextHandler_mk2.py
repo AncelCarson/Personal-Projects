@@ -30,8 +30,8 @@ from threading import Thread
 from datetime import datetime
 
 from Roller import roller
-from MenuMaker import menu
-from MenuMaker import makeMenu
+# from MenuMaker import menu
+# from MenuMaker import makeMenu
 
 # Object Class
 class TextHandler:
@@ -81,7 +81,7 @@ class TextHandler:
         content = message.split(' ')
         try:
             if content[0] == "/Jeeves":
-                text = [[f"Good {self.title} {greeting[0]}. {greeting[1]}",0]]
+                text = [[f"Good {greeting[0]} {self.title}. {greeting[1]}",0]]
 
             if content[0] == "/DM":
                 self.mode = "userSetTest"
