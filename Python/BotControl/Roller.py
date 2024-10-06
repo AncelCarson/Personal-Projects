@@ -45,6 +45,8 @@ def main():
    """Driver of the program"""
    while True:
       diceRoll = input("What should I Roll?\n")
+      if diceRoll.lower() in ["stop","exit"]:
+         break
       diceRoll = diceRoll.split(" ")
       output = roller(diceRoll)
       print(output)
@@ -99,8 +101,7 @@ def roller(request: str):
 
    while count < len(request):
       line = request[count]
-      temp = search(r'\D+', line)
-      action = temp.group(0).lower() if temp else " "
+      action = search(r'\D+', line).group(0).lower() if search(r'\D+', line) else " "
       count += 1
       if line.lower() in ("help","h"):
          return menu()
@@ -110,8 +111,7 @@ def roller(request: str):
          rolls = actionDict[action](line)
          outputStack += f"{rolls}\n"
       elif "d" in line:          #Dice to Roll
-         [num,die] = line.split('d')
-         [rolls,die] = roll(num,die)#Dice Results
+         [rolls,die] = roll(*line.split('d'))#Dice Results
          outputStack += f"{rolls}\n"
          # outputStack.append(list(rolls))
       elif line in ["+","-","/","*"]:
