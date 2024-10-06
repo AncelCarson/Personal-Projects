@@ -67,6 +67,7 @@ async def on_ready():
         f'{client.user} is connected to:',
         f'{guild.name} - id: {guild.id}',
         sep='\n')
+    await send_bot_out()
 
 #================   On Reaction Add     ================
 @client.event
@@ -180,7 +181,7 @@ async def send_bot_out():
     """Function Docstring"""
     while True:
         if not bot_out.empty():
-            _, content, channel = bot_out.get()
+            content, _, channel = bot_out.get()
             await channel.send(content)
         await asyncio.sleep(1)
 

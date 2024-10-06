@@ -51,14 +51,18 @@ class TextHandler:
         responseIn: Creates a thread for processing a response
         responseProcess: A test for handling sequential responses
     """
-    def __init__(self, userId=None, title="...you", interface="cmd"):
+    def __init__(self, output_queue=None, userId=None, title="...you", interface="cmd", location = "term"):
+        self.output = output_queue
         self.userId = userId
         self.title = title
         self.interface = interface
-        self.answers = []
+        self.location = location
         self.mode = "waiting"
-        self.channel = None
         self._thread = None
+
+    def __call__(self):
+        message = f"Thread for {self.userId} has been called"
+        self.output.put((message,"cmd","term"))
 
     def __enter__(self):
         pass
@@ -80,17 +84,17 @@ class TextHandler:
 
         content = message.split(' ')
         try:
-            if content[0] == "/Jeeves":
-                text = [[f"Good {greeting[0]} {self.title}. {greeting[1]}",0]]
+            if content[0] == "Jeeves":
+                text = [f"Good {greeting[0]} {self.title}. {greeting[1]}"]
 
-            if content[0] == "/DM":
+            if content[0] == "DM":
                 self.mode = "userSetTest"
                 text = [[f'Good {greeting[0]} {content[1]}. I am here to assist you',0],
                         ["Would you please tell me your First and Last Name?",1],
                         ["Are you Male (M) or Female (F)?",0],
                         ["Please answer with a single Character",1]]
 
-            if content[0] == "/Response":
+            if content[0] == "Response":
                 self.mode = "responseTest"
                 text = [['This is a call and response test',0],
                         ["What is response 1?",1],
@@ -98,45 +102,48 @@ class TextHandler:
                         ["Pause for effect",0],
                         ["Response 3?",1]]
 
-            # if content[0] == "/roll":
-            #     text = [[roller(content[1:]),0]]
+            if content[0] == "roll":
+                if len(content) == 1:
+                    content.append("help")
+                text = [roller(content[1:])]
                 # for line in result:
                 #     text.append([str(line),0])
 
 
         except Exception as e:
-            text = [[f"Something has gone wrong. Please ask again: {e}",0]]
+            text = [f"Something has gone wrong. Please ask again: {e}"]
 
-        return text
+        for line in text:
+            self.output.put((line,self.interface,self.location))
 
-    def responseIn(self, answers):
-        """Creates a thread form processing answers."""
-        self.answers = answers
-        self._thread = Thread(target=self.responseProcess, daemon=True)
-        self._thread.start()
-        return "¯\\(°_o)/¯"
+    # def responseIn(self, answers):
+    #     """Creates a thread form processing answers."""
+    #     self.answers = answers
+    #     self._thread = Thread(target=self.responseProcess, daemon=True)
+    #     self._thread.start()
+    #     return "¯\\(°_o)/¯"
 
-    def responseProcess(self):
-        """Test for response timing."""
-        process = self.mode
-        self.mode = "thinking"
+    # def responseProcess(self):
+    #     """Test for response timing."""
+    #     process = self.mode
+    #     self.mode = "thinking"
 
-        if process == "responseTest":
-            print(self.answers)
-            for i in range(10):
-                print(i)
-                sleep(1)
-        self.mode = "waiting"
+    #     if process == "responseTest":
+    #         print(self.answers)
+    #         for i in range(10):
+    #             print(i)
+    #             sleep(1)
+    #     self.mode = "waiting"
 
-        if process == "userSetTest":
-            print(self.answers)
-            for i in range(10):
-                print(i)
-                sleep(1)
+    #     if process == "userSetTest":
+    #         print(self.answers)
+    #         for i in range(10):
+    #             print(i)
+    #             sleep(1)
 
-        sender(self, "Task Complete")
-        self.mode = "waiting"
-        return self
+    #     sender(self, "Task Complete")
+    #     self.mode = "waiting"
+    #     return self
 
 # Main Function
 def main():

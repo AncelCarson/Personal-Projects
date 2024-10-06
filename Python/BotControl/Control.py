@@ -50,7 +50,8 @@ def main():
    running = True
 
    activeUsers = []
-   activeThreads = {"admin": TextHandler("Admin", "Sir", "cmd")}
+   activeHandlers = {"admin": TextHandler(output_queue, "Admin", "Sir", "cmd", "term")}
+   activeThreads = {"admin": threading.Thread(target=activeHandlers["admin"], daemon=True)}
 
    while running:
       # Check for messages in the input queue
@@ -60,9 +61,11 @@ def main():
 
          if ctx[0] not in activeUsers:
             activeUsers.append(ctx[0])
-            activeThreads[ctx[0]] = TextHandler(*ctx)
             initMsg = f"New thread Initalizing for {ctx[0]}"
             output_queue.put((initMsg, "cmd", "term"))
+            activeHandlers[ctx[0]] = TextHandler(output_queue, ctx[0], "Sir", ctx[2], ctx[3])
+            activeThreads[ctx[0]] = threading.Thread(target=activeHandlers[ctx[0]], daemon=True)
+            activeThreads[ctx[0]].start()
 
          # Process the message, add flags, and direct it to the appropriate program
          print(f"{ctx[2]} passed message for XX: {ctx[1]}")
@@ -72,6 +75,8 @@ def main():
          else:
             # Handle or route the message as needed
             pass
+
+         activeHandlers[ctx[0]].messageIn(ctx[1])
 
       # Additional logic or cleanup can go here
       if not output_queue.empty():
