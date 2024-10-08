@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### UPdated: 5/10/2024
+### UPdated: 7/10/2024
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### Jeeves_mk3.py
@@ -23,13 +23,13 @@ Variables:
     activeThreads (list -> thread):
 
 Functions:
-   on_ready: Actions to perform on successful startup
-   on_reaction_add: Actions to perform when a reaction is added
-   on_member_join: Actions to perform when a new member joins
-   on_message: Actions to perform when a message is recieved
-   getAnswers: sends messages from user to the TextHandler
-   response_get: Gets responses from user to messages sent by the bot
-   sender: Sends messages to Discord
+    on_ready: Actions to perform on successful startup
+    on_reaction_add: Actions to perform when a reaction is added
+    on_member_join: Actions to perform when a new member joins
+    on_message: Actions to perform when a message is recieved
+    getAnswers: sends messages from user to the TextHandler
+    response_get: Gets responses from user to messages sent by the bot
+    sender: Sends messages to Discord
 """
 
 # Libraries
@@ -107,7 +107,7 @@ async def on_message(message):
     """Recieves in message from Discord and passes it to the TextHandler."""
     UserId = message.author.id
 
-    # Check that Jeeves does nto respond to his own message.
+    # Check that Jeeves does not respond to his own message.
     if UserId == client.user.id:
         return
 
@@ -128,54 +128,10 @@ async def on_message(message):
             else: title = "...you"
 
         activeUsers.append(UserId)
-        # activeThreads.append(TextHandler(UserId,title,"Discord"))
 
     bot_in.put((UserId,message.content[1:],"Discord",message.channel))
-    # userIndex = activeUsers.index(UserId)
-    # thread = activeThreads[userIndex]
-
-    # text = thread.messageIn(message.content)
-    # # print(text)
-    # # async def textProcessor(text):
-    # answers = await getAnswers(text, message)
-
-    # if len(answers) > 0:
-    #     thread.channel = message.channel
-    #     thread.responseIn(answers)
 
 #================   Non Event Functions      ================
-
-# async def getAnswers(text, message):
-#     """Recieves answers from the TextHandler to be sent to the user."""
-#     answers = []
-#     if len(text) == 0:
-#         return answers
-#     for line in text:
-#         if line[1] == 0:
-#             await sender(message, line[0])
-#         elif line[1] == 1:
-#             try:
-#                 answers.append(await response_get(message, line[0], 10))
-#             except asyncio.TimeoutError:
-#                 missedText = "I am sorry, I did not catch all of that " \
-#                             "can you please start again from the beginning?"
-#                 await sender(message, missedText)
-#                 return []
-#     return answers
-
-# async def response_get(ctx, message: str,timeout: float):
-#     """Handles interactions that require responses to messages sent by the bot."""
-#     def check(m):
-#         return m.author == ctx.author and m.channel == ctx.channel
-
-#     await sender(ctx, message)
-#     response = await client.wait_for("message", check=check, timeout=timeout)
-#     print(response.content)
-#     return response.content
-
-# async def sender(ctx, message: str):
-#     """Sends Messages to Discord"""
-#     await ctx.channel.send(message)
 
 async def send_bot_out():
     """Function Docstring"""
