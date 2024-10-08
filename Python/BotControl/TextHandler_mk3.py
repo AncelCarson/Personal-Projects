@@ -77,6 +77,9 @@ class TextHandler:
     def run(self):
         """Starts the text processing thread loop for the queue"""
         while self.mode != "kill":
+            if self.mode == "thinking":
+                if not self._thread.is_alive():
+                    self.mode = "idle"
             try:
                 message = self.queues[0].get(timeout=.1)
                 self.messageIn(message)
@@ -118,7 +121,6 @@ class TextHandler:
                     io = self.handleInput, self.handlePrint
                     self._thread = Thread(target=responseTest, args = io, daemon=True)
                     self._thread.start()
-                    self.mode = "idle"
 
                 if content[0] == "roll":
                     if len(content) == 1:
@@ -204,6 +206,7 @@ def responseTest(handleIn, handleOut):
     handleIn("What is response 1?")
     handleIn("What is response 2?")
     handleOut("Pause for effect")
+    sleep(5)
     handleIn("Response 3?")
 
 # Self Program Call
