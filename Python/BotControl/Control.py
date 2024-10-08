@@ -3,20 +3,16 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 5/10/2024
+### Updated: 7/10/2024
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
 
-"""A one line summary of the module or program, terminated by a period.
+"""Data sorter for the Jeeves Project.
 
-Leave one blank line.  The rest of this docstring should contain an
-overall description of the module or program.  Optionally, it may also
-contain a brief description of exported classes and functions and/or usage
-examples.
-
-Classes:
-    Start:
+This program will initializeall of the interfaces that Jeeves has access to. It
+will then sort incoming data to TextHandlers for processing user requests and 
+responses. It does this by managing various queues and threads between all modules.
 
 Functions:
    main: Driver of the program
@@ -32,7 +28,7 @@ from TextHandler_mk3 import TextHandler
 
 # Main Function
 def main():
-   """Function Docstring."""
+   """Driver of the Program"""
    # Create the shared queues
    input_queue = queue.Queue()
    output_queue = queue.Queue()
@@ -50,6 +46,7 @@ def main():
    running = True
 
    activeUsers = []
+   activeQueues = {"admin": [queue.Queue(),output_queue]}
    activeHandlers = {"admin": TextHandler(output_queue, "Admin", "Sir", "cmd", "term")}
    activeThreads = {"admin": threading.Thread(target=activeHandlers["admin"], daemon=True)}
 
@@ -63,7 +60,8 @@ def main():
             activeUsers.append(ctx[0])
             initMsg = f"New thread Initalizing for {ctx[0]}"
             output_queue.put((initMsg, "cmd", "term"))
-            activeHandlers[ctx[0]] = TextHandler(output_queue, ctx[0], "Sir", ctx[2], ctx[3])
+            activeQueues[ctx[0]] = [queue.Queue(),output_queue]
+            activeHandlers[ctx[0]] = TextHandler(activeQueues[ctx[0]], ctx[0], "Sir", ctx[2], ctx[3])
             activeThreads[ctx[0]] = threading.Thread(target=activeHandlers[ctx[0]], daemon=True)
             activeThreads[ctx[0]].start()
 
@@ -76,7 +74,7 @@ def main():
             # Handle or route the message as needed
             pass
 
-         activeHandlers[ctx[0]].messageIn(ctx[1])
+         activeQueues[ctx[0]][0].put(ctx[1])
 
       # Additional logic or cleanup can go here
       if not output_queue.empty():
