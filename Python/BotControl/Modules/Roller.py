@@ -133,6 +133,7 @@ def roller(request: str):
          operation = newOperation
          if line == "@":
             total = 0
+            operation = "+"
          mathIt = False
 
       first = False              #Signifies the end of the First Loop
