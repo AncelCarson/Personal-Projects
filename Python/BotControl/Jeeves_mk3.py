@@ -44,7 +44,7 @@ from dotenv import load_dotenv
 #creating a new discord client for us to use. cool_bot be the client
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = int(os.getenv('GUILD_TOKEN'))
+GUILD = int(os.getenv('BERG_BARN_GUILD'))
 
 intents = discord.Intents.default()
 intents.message_content = True
