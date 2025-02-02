@@ -137,7 +137,7 @@ async def on_message(message):
 #================   Non Event Functions      ================
 
 async def send_bot_out():
-    """Function Docstring"""
+    """While Loop reading the Output Queue"""
     while True:
         if not bot_out.empty():
             content, _, channel = bot_out.get()
