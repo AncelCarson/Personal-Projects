@@ -74,6 +74,10 @@ def main():
             # Handle or route the message as needed
             pass
 
+         # TODO: Remove this when multi-channel thread logic is implemented. 
+         # Makes the bot respond to the thread the question was asked in.
+         activeHandlers[ctx[0]].location = ctx[3]
+
          activeQueues[ctx[0]][0].put(ctx[1])
 
       # Additional logic or cleanup can go here
