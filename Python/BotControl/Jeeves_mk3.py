@@ -45,6 +45,7 @@ from dotenv import load_dotenv
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = int(os.getenv('BERG_BARN_GUILD'))
+ADMIN = int(os.getenv('ADMIN_ID'))
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -63,6 +64,8 @@ bot_out = None
 async def on_ready():
     """Prints to terminal that the bot is connected properly."""
     guild = client.get_guild(GUILD)
+    adminDM = client.get_user(ADMIN)
+    await adminDM.send("Jeeves has initialized")
     print(
         f'{client.user} is connected to:',
         f'{guild.name} - id: {guild.id}',
