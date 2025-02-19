@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 12/3/2023
-### UPdated: 12/3/2023
+### Updated: 18/3/2023
 ### Windows 11
 ### Python command line, VS Code, IDLE
 ### Roller.py
@@ -72,6 +72,7 @@ def roller(request: str):
    newOperation = "+"
    request.append("@")
 
+   # pylint: disable=used-before-assignment
    actionDict = {
       "drh": lambda line: (
          [0] if int(line[3:]) >= len(rolls)
@@ -98,6 +99,7 @@ def roller(request: str):
       "mai": lambda line: rerollInf(rolls, int(line[3:]), die, "above"),
       "mii": lambda line: rerollInf(rolls, int(line[3:]), die, "below"),
    }
+   # pylint: enable=used-before-assignment
 
    while count < len(request):
       line = request[count]
