@@ -46,6 +46,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 GUILD = int(os.getenv('BERG_BARN_GUILD'))
 ADMIN = int(os.getenv('ADMIN_ID'))
+GIT_LOG = os.getenv('GIT_LOG')
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -66,6 +67,9 @@ async def on_ready():
     guild = client.get_guild(GUILD)
     adminDM = client.get_user(ADMIN)
     await adminDM.send("Jeeves has initialized")
+    if os.name == "posix":
+        with open(GIT_LOG, 'r', encoding="utf-8") as file:
+            await adminDM.send(file.read())
     print(
         f'{client.user} is connected to:',
         f'{guild.name} - id: {guild.id}',
@@ -123,12 +127,13 @@ async def on_message(message):
         return
 
     if UserId not in activeUsers:
-        for role in message.author.roles:
-            if role.id == 1061842845981491221:
-                title = "Sir"
-            elif role.id == 1061842851220160664:
-                title = "Madam"
-            else: title = "...you"
+        # TODO: Assess Roles after adding user Table
+        # for role in message.author.roles:
+        #     if role.id == 1061842845981491221:
+        #         title = "Sir"
+        #     elif role.id == 1061842851220160664:
+        #         title = "Madam"
+        #     else: title = "...you"
 
         activeUsers.append(UserId)
 
