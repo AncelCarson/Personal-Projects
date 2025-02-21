@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### UPdated: 7/10/2024
+### Updated: 21/2/2024
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -60,7 +60,7 @@ class TextHandler:
         self.interface = interface
         self.location = location
         self.mode = "idle"
-        self._thread = None
+        self.thread = None
         self.responseQueue = queue.Queue()
 
     def __call__(self):
@@ -78,7 +78,7 @@ class TextHandler:
         """Starts the text processing thread loop for the queue"""
         while self.mode != "kill":
             if self.mode == "thinking":
-                if not self._thread.is_alive():
+                if not self.thread.is_alive():
                     self.mode = "idle"
             try:
                 message = self.queues[0].get(timeout=.1)
@@ -98,34 +98,24 @@ class TextHandler:
         if self.mode == "thinking":
             text = [f"One monent {self.title}. I am processing the last request"]
 
-        if self.mode == "waiting":
+        elif self.mode == "waiting":
             self.responseQueue.put(message)
 
-        if self.mode == "idle":
+        elif self.mode == "idle":
             greeting = day_greeting()
 
             content = message.split(' ')
+
+            commandDict = {
+                "Jeeves": Tasks.Jeeves,
+                "DM": Tasks.DM,
+                "Response": Tasks.Response,
+                "roll": Tasks.roll,
+            }
+
             try:
-                if content[0] == "Jeeves":
-                    text = [f"Good {greeting[0]} {self.title}. {greeting[1]}"]
-
-                if content[0] == "DM":
-                    self.mode = "userSetTest"
-                    text = [f'Good {greeting[0]} {content[1]}. I am here to assist you',
-                            "Would you please tell me your First and Last Name?",
-                            "Are you Male (M) or Female (F)?",
-                            "Please answer with a single Character"]
-
-                if content[0] == "Response":
-                    self.mode = "thinking"
-                    io = self.handleInput, self.handlePrint
-                    self._thread = Thread(target=responseTest, args = io, daemon=True)
-                    self._thread.start()
-
-                if content[0] == "roll":
-                    if len(content) == 1:
-                        content.append("help")
-                    text = [roller(content[1:])]
+                if content[0] in commandDict:
+                    text = commandDict[content[0]](content, self, greeting)
 
             except Exception as e:
                 text = [f"Something has gone wrong. Please ask again: {e}"]
@@ -158,6 +148,46 @@ class TextHandler:
         response = self.responseQueue.get()
         self.mode = "thinking"
         return response
+
+class Tasks:
+    """Class Docstring.
+
+    Functions:
+        Jeeves: Checks the bot state and user information
+        DM: Initializes a Direct Message Conversdation
+        Response: Tests Creation of sub threads
+        roll: Initialized the roller module
+    """
+
+    @staticmethod
+    def Jeeves(_, handler, greeting):
+        """Returns a greeting to the user"""
+        return [f"Good {greeting[0]} {handler.title}. {greeting[1]}"]
+
+    @staticmethod
+    def DM(content, handler, greeting):
+        """Sends a DM to the user for information"""
+        handler.mode = "userSetTest"
+        return [f'Good {greeting[0]} {content[1]}. I am here to assist you',
+                "Would you please tell me your First and Last Name?",
+                "Are you Male (M) or Female (F)?",
+                "Please answer with a single Character"]
+
+    @staticmethod
+    def Response(_, handler, __):
+        """Creates a thread and asks some quesitons"""
+        handler.mode = "thinking"
+        io = handler.handleInput, handler.handlePrint
+        handler.thread = Thread(target=responseTest, args = io, daemon=True)
+        handler.thread.start()
+        return ""
+
+    @staticmethod
+    def roll(content, _, __):
+        """gets a response from the roller module"""
+        if len(content) == 1:
+            content.append("help")
+        return [roller(content[1:])]
 
 # Main Function
 def main():
