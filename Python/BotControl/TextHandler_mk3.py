@@ -12,7 +12,7 @@
 
 This program takes in the text from Jeeves and routes it to the correct
 location for processing. Once a response is recieved, it processes it and
-prints it to the correct location. 
+prints it to the correct location.
 
 Classes:
     TextHandler: Class made to handle incoming and outgoing text
@@ -53,7 +53,7 @@ class TextHandler:
         mode (str): Current mode of the program
         _thread (thread): Thread used to process a recieved message
         responseQueue (Queue): Input Queue for subprograms
-    
+
     Functions:
         messageIn: Directs an incoming message to the correct location
         responseIn: Creates a thread for processing a response
@@ -94,7 +94,7 @@ class TextHandler:
 
     def messageIn(self, message: str):
         """Splits incoming messages and sorts them via keywords.
-        
+
         Parameters:
             self: TextHandler Instance
             message: User input to start process or respond to existing process
@@ -133,7 +133,7 @@ class TextHandler:
 
     def handlePrint(self, message: str):
         """Custom Print Statement to be passed to sub programs.
-        
+
         Parameters:
             self: TextHandler Instance
             message: Message to be sent to the interface
@@ -142,7 +142,7 @@ class TextHandler:
 
     def handleInput(self, message: str):
         """Custom Input Statement to be passed to sub programs.
-        
+
         Parameters:
             self: TextHandler Instance
             message: Message to be sent to the interface
@@ -206,7 +206,7 @@ class Tasks:
             with open(BOT_LOG, 'r', encoding="utf-8") as file:
                 contents = file.read()
             os.system(f"> {BOT_LOG}")  # Clears the file
-            return contents
+            return [contents]
 
         adminDict = {
             "log": log,
@@ -216,7 +216,7 @@ class Tasks:
 
         if os.name == "posix":
             if content[1] in adminDict:
-                return adminDict[content[1]]
+                return adminDict[content[1]]()
 
         return""
 
