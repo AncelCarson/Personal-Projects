@@ -37,8 +37,7 @@ from Modules.MenuMaker import makeMenu
 
 load_dotenv()
 BOT_LOG = os.getenv('BOT_LOG')
-
-testing = True
+ENV = os.getenv('ENV')
 
 # Object Class
 class TextHandler:
@@ -108,7 +107,6 @@ class TextHandler:
             self.responseQueue.put(message)
 
         elif self.mode == "idle":
-            greeting = day_greeting()
 
             content = message.split(' ')
 
@@ -120,9 +118,14 @@ class TextHandler:
                 "admin": Tasks.admin,
             }
 
+            if ENV == "test":
+                commandDict = {
+                    "admin": Tasks.admin,
+                }
+
             try:
                 if content[0] in commandDict:
-                    text = commandDict[content[0]](content, self, greeting)
+                    text = commandDict[content[0]](content, self)
 
             except Exception as e:
                 text = [f"Something has gone wrong. Please ask again: {e}"]
@@ -167,13 +170,15 @@ class Tasks:
     """
 
     @staticmethod
-    def Jeeves(_, handler, greeting):
+    def Jeeves(_, handler):
         """Returns a greeting to the user"""
+        greeting = day_greeting()
         return [f"Good {greeting[0]} {handler.title}. {greeting[1]}"]
 
     @staticmethod
-    def DM(content, handler, greeting):
+    def DM(content, handler):
         """Sends a DM to the user for information"""
+        greeting = day_greeting()
         if len(content) == 1:
             content.append(handler.userId)
         handler.mode = "userSetTest"
@@ -183,7 +188,7 @@ class Tasks:
                 "Please answer with a single Character"]
 
     @staticmethod
-    def Response(_, handler, __):
+    def Response(_, handler):
         """Creates a thread and asks some quesitons"""
         handler.mode = "thinking"
         io = handler.handleInput, handler.handlePrint
@@ -192,15 +197,18 @@ class Tasks:
         return ""
 
     @staticmethod
-    def roll(content, _, __):
+    def roll(content, _):
         """gets a response from the roller module"""
         if len(content) == 1:
             content.append("help")
         return [roller(content[1:])]
 
     @staticmethod
-    def admin(content, handler, greeting):
+    def admin(content, handler):
         """Processes Admin Commands"""
+
+        if len(content) == 1:
+            return ["Additional Admin Command Required"]
 
         def log():
             with open(BOT_LOG, 'r', encoding="utf-8") as file:
@@ -210,13 +218,17 @@ class Tasks:
 
         adminDict = {
             "log": log,
-            # "reboot":os.system('reboot'),
-            # "thread":None
         }
 
-        if os.name == "posix":
-            if content[1] in adminDict:
-                return adminDict[content[1]]()
+        if ENV == "test":
+            adminDict = {
+                "test": lambda: ["You got the test message"]
+                # "reboot":os.system('reboot'),
+                # "thread":None
+            }
+
+        if content[1] in adminDict:
+            return adminDict[content[1]]()
 
         return""
 
