@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 21/2/2024
+### Updated: 22/2/2024
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -29,10 +29,16 @@ import queue
 from time import sleep
 from threading import Thread
 from datetime import datetime
+from dotenv import load_dotenv
 
 from Modules.Roller import roller
 from Modules.MenuMaker import menu
 from Modules.MenuMaker import makeMenu
+
+load_dotenv()
+BOT_LOG = os.getenv('BOT_LOG')
+
+testing = True
 
 # Object Class
 class TextHandler:
@@ -111,6 +117,7 @@ class TextHandler:
                 "DM": Tasks.DM,
                 "Response": Tasks.Response,
                 "roll": Tasks.roll,
+                "admin": Tasks.admin,
             }
 
             try:
@@ -167,6 +174,8 @@ class Tasks:
     @staticmethod
     def DM(content, handler, greeting):
         """Sends a DM to the user for information"""
+        if len(content) == 1:
+            content.append(handler.userId)
         handler.mode = "userSetTest"
         return [f'Good {greeting[0]} {content[1]}. I am here to assist you',
                 "Would you please tell me your First and Last Name?",
@@ -188,6 +197,28 @@ class Tasks:
         if len(content) == 1:
             content.append("help")
         return [roller(content[1:])]
+
+    @staticmethod
+    def admin(content, handler, greeting):
+        """Processes Admin Commands"""
+
+        def log():
+            with open(BOT_LOG, 'r', encoding="utf-8") as file:
+                contents = file.read()
+            os.system(f"> {BOT_LOG}")  # Clears the file
+            return contents
+
+        adminDict = {
+            "log": log,
+            # "reboot":os.system('reboot'),
+            # "thread":None
+        }
+
+        if os.name == "posix":
+            if content[1] in adminDict:
+                return adminDict[content[1]]
+
+        return""
 
 # Main Function
 def main():
