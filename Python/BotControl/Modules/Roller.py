@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 12/3/2023
-### Updated: 18/3/2023
+### Updated: 24/2/2025
 ### Windows 11
 ### Python command line, VS Code, IDLE
 ### Roller.py
@@ -153,8 +153,12 @@ def wordCheck(request: str):
    Returns:
       request (list -> str): Set of actions broken into a list
    """
-   if request[0] in ["Stats","stats"]:
+   if request[0] in ["Stats","stats","STATS"]:
       request = "6 4d6 r1 dr1".split(" ")
+   elif request[0] in ["Adv","adv","ADV"]:
+      request = "2d20 k1".split(" ")
+   elif request[0] in ["Dis","dis","DIS"]:
+      request = "2d20 drh1".split(" ")
    else:
       pass
    return request
