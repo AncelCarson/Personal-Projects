@@ -3,12 +3,12 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 22/2/2024
+### Updated: 24/2/2024
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
 
-"""Text processing for Jeeves mk2.
+"""Text processing for Jeeves mk3.
 
 This program takes in the text from Jeeves and routes it to the correct
 location for processing. Once a response is recieved, it processes it and
@@ -167,6 +167,7 @@ class Tasks:
         DM: Initializes a Direct Message Conversdation
         Response: Tests Creation of sub threads
         roll: Initialized the roller module
+        admin: Handles admin requests
     """
 
     @staticmethod
@@ -204,7 +205,7 @@ class Tasks:
         return [roller(content[1:])]
 
     @staticmethod
-    def admin(content, handler):
+    def admin(content, _):
         """Processes Admin Commands"""
 
         if len(content) == 1:
@@ -214,7 +215,11 @@ class Tasks:
             with open(BOT_LOG, 'r', encoding="utf-8") as file:
                 contents = file.read()
             os.system(f"> {BOT_LOG}")  # Clears the file
-            return [contents]
+            if len(contents) > 2000:
+                contents = list(contents[0+i:2000+i] for i in range(0, len(contents), 2000))
+            else:
+                contents = [contents]
+            return contents
 
         adminDict = {
             "log": log,
