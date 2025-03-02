@@ -25,6 +25,7 @@ Variables:
 Functions:
     on_ready: Actions to perform on successful startup
     on_reaction_add: Actions to perform when a reaction is added
+    on_raw_reaction_add: Actions to perform when a reaction is added to any message
     on_member_join: Actions to perform when a new member joins
     on_message: Actions to perform when a message is recieved
     getAnswers: sends messages from user to the TextHandler
@@ -41,10 +42,13 @@ from datetime import datetime
 import discord
 from dotenv import load_dotenv
 
+import Modules.Server_Actions as SA
+
 #creating a new discord client for us to use. cool_bot be the client
 load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-GUILD = int(os.getenv('BERG_BARN_GUILD'))
+BERG_BARN_GUILD = int(os.getenv('BERG_BARN_GUILD'))
+NOTHING_GUILD = int(os.getenv('NOTHING_GUILD'))
 ADMIN = int(os.getenv('ADMIN_ID'))
 GIT_LOG = os.getenv('GIT_LOG')
 
@@ -64,7 +68,7 @@ bot_out = None
 @client.event
 async def on_ready():
     """Prints to terminal that the bot is connected properly."""
-    guild = client.get_guild(GUILD)
+    guild = client.get_guild(BERG_BARN_GUILD)
     adminDM = client.get_user(ADMIN)
     await adminDM.send("Jeeves has initialized")
     if os.name == "posix":
@@ -85,7 +89,7 @@ async def on_reaction_add(reaction, user):
     message = reaction.message
 
     if message.guild is None: #this is a dm message
-        guild = client.get_guild(GUILD)
+        guild = client.get_guild(BERG_BARN_GUILD)
         Madam = guild.get_role(1061842851220160664)
         Monsieur = guild.get_role(1061842845981491221)
         member = guild.get_member(user.id)
@@ -95,6 +99,17 @@ async def on_reaction_add(reaction, user):
             await member.add_roles(Monsieur, reason="Preference Set")
         await member.dm_channel.send("Thank you for making your selection")
         await member.dm_channel.send("Your role has been updated accordingly")
+
+# #==============   On Raw Reaction Add     ==============
+# @client.event
+# async def on_raw_reaction_add(payload):
+#     """Sets user role based on reaction selection."""
+#     serverDict = {
+#         NOTHING_GUILD: SA.A_lot_to_do.raw_reaction
+#     }
+
+#     if payload.guild_id in serverDict:
+#         await serverDict[payload.guild_id](client, payload, payload.guild_id)
 
 #================   On Member Join      ================
 @client.event
