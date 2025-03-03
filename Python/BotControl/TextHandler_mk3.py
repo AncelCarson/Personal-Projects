@@ -121,6 +121,7 @@ class TextHandler:
             if ENV == "test":
                 commandDict = {
                     "admin": Tasks.admin,
+                    "DM": Tasks.DM
                 }
 
             try:
@@ -179,14 +180,11 @@ class Tasks:
     @staticmethod
     def DM(content, handler):
         """Sends a DM to the user for information"""
-        greeting = day_greeting()
-        if len(content) == 1:
-            content.append(handler.userId)
-        handler.mode = "userSetTest"
-        return [f'Good {greeting[0]} {content[1]}. I am here to assist you',
-                "Would you please tell me your First and Last Name?",
-                "Are you Male (M) or Female (F)?",
-                "Please answer with a single Character"]
+        handler.mode = "thinking"
+        data = handler.handleInput, handler.handlePrint, content, handler
+        handler.thread = Thread(target=aboutYou, args = data, daemon=True)
+        handler.thread.start()
+        return ""
 
     @staticmethod
     def Response(_, handler):
@@ -286,6 +284,25 @@ def responseTest(handleIn, handleOut):
     handleOut("Pause for effect")
     sleep(5)
     handleIn("Response 3?")
+
+def aboutYou(handleIn, handleOut, content, handler):
+    """Tests the Response processing of the text handler.
+    
+    Parameters:
+        handleIn (Input): Custom Input Statement for the Text Handler
+        handleOut (Print): Custom Output Statement for the Text Handler
+        content (str): Message from the user
+        handler (TextHandler): Object for the current Thread
+    """
+    greeting = day_greeting()
+    if len(content) == 1:
+        content.append(handler.userId)
+    handler.mode = "userSetTest"
+    handleOut(f'Good {greeting[0]} {content[1]}. I am here to assist you')
+    name = handleIn("Would you please tell me your First and Last Name?")
+    handleOut("Are you Male (M) or Female (F)?")
+    selection = handleIn("Please answer with a single Character")
+    handleOut(f'Thank you {name} for answering {selection}. I will update your data')
 
 # Self Program Call
 if __name__ == '__main__':
