@@ -19,12 +19,15 @@ Functions:
 """
 
 # Libraries
-import threading
+import os
 import queue
+import threading
+from dotenv import load_dotenv
 from Jeeves_mk3 import loadBot
 from TextHandler_mk3 import TextHandler
 
-# from Roller import roller
+load_dotenv()
+ENV = os.getenv('ENV')
 
 # Main Function
 def main():
@@ -38,12 +41,16 @@ def main():
    }
 
    # Initializing interface threads
-   discordThread = threading.Thread(target=loadBot, args=(input_queue, outQueues["Discord"]), daemon=True)
-   commandThread = threading.Thread(target=cmdTerm, args=(input_queue, outQueues["cmd"]), daemon=True)
+   discordThread = threading.Thread(target=loadBot,
+                   args=(input_queue, outQueues["Discord"]), daemon=True)
+   commandThread = threading.Thread(target=cmdTerm,
+                   args=(input_queue, outQueues["cmd"]), daemon=True)
 
    # Starting interface Threads
-   discordThread.start()
-   commandThread.start()
+   if ENV != "test":
+      discordThread.start()
+   else:
+      commandThread.start()
 
    running = True
 
@@ -63,7 +70,8 @@ def main():
             initMsg = f"New thread Initalizing for {ctx[0]}"
             output_queue.put((initMsg, "cmd", "term"))
             activeQueues[ctx[0]] = [queue.Queue(),output_queue]
-            activeHandlers[ctx[0]] = TextHandler(activeQueues[ctx[0]], ctx[0], "Sir", ctx[2], ctx[3])
+            activeHandlers[ctx[0]] = TextHandler(activeQueues[ctx[0]], ctx[0],
+                                                 "Sir", ctx[2], ctx[3])
             activeThreads[ctx[0]] = threading.Thread(target=activeHandlers[ctx[0]], daemon=True)
             activeThreads[ctx[0]].start()
 
