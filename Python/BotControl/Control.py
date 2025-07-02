@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 7/10/2024
+### Updated: 2/7/2025
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
@@ -39,16 +39,18 @@ def main():
 
    # Initializing interface threads
    discordThread = threading.Thread(target=loadBot, args=(input_queue, outQueues["Discord"]), daemon=True)
+   commandThread = threading.Thread(target=cmdTerm, args=(input_queue, outQueues["cmd"]), daemon=True)
 
-   # Starting interfaace Threads
+   # Starting interface Threads
    discordThread.start()
+   commandThread.start()
 
    running = True
 
    activeUsers = []
-   activeQueues = {"admin": [queue.Queue(),output_queue]}
-   activeHandlers = {"admin": TextHandler(output_queue, "Admin", "Sir", "cmd", "term")}
-   activeThreads = {"admin": threading.Thread(target=activeHandlers["admin"], daemon=True)}
+   activeQueues = {}
+   activeHandlers = {}
+   activeThreads = {}
 
    while running:
       # Check for messages in the input queue
@@ -90,6 +92,11 @@ def main():
          ctx = outQueues["cmd"].get()
          # ctx = Message, Destination, Location
          print(ctx[0])
+
+def cmdTerm(input_queue,_):
+   """Terminal Interface"""
+   while True:
+      input_queue.put(("admin",input(),"cmd","term"))
 
 # Self Program Call
 if __name__ == '__main__':
