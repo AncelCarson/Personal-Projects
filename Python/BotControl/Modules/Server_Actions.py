@@ -64,3 +64,28 @@ class A_lot_to_do:
         Returns:
             None (none_type): This is an example
         """
+
+class Berg_Barn:
+    """Class Docstring.
+    
+    Functions:
+        raw_reaction:
+        member_join:
+    """
+    @staticmethod
+    async def member_join(member, title, guild):
+        """Function Docstring.
+
+        Parameters:
+            self (self): Ths instance of this class 
+
+        Returns:
+            None (none_type): This is an example
+        """
+        Madam = guild.get_role(1061842851220160664)
+        Monsieur = guild.get_role(1061842845981491221)
+        if title == "Sir":
+            await member.add_roles(Monsieur, reason="Preference Set")
+        elif title == "Madam":
+            await member.add_roles(Madam, reason="Preference Set")
+        await member.dm_channel.send("Your roles in Berg Barn have been updated")

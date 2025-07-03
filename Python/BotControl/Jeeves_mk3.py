@@ -43,6 +43,7 @@ import discord
 from dotenv import load_dotenv
 
 import Modules.Server_Actions as SA
+import Modules.User_Processor as UP
 
 #creating a new discord client for us to use. cool_bot be the client
 load_dotenv()
@@ -117,8 +118,17 @@ async def on_reaction_add(reaction, user):
 @client.event
 async def on_member_join(member):
     """Requests title assignment when a new member joins."""
-    await member.create_dm()
-    await bot_in.put((member.id,f"DM {member.name}","Discord",member.dm_channel))
+    serverDict = {
+        BERG_BARN_GUILD: SA.Berg_Barn.member_join
+    }
+    if member.guild in serverDict:
+        userID = UP.getID(member.id,"Discord")
+        if userID is not None:
+            title = UP.getTitle(userID)
+            await serverDict[member.guild](client, member, title, member.guild_id)
+        else:
+            await member.create_dm()
+            await bot_in.put((member.id,f"DM {member.name}","Discord",member.dm_channel))
 
 #================   On Message      ================
 @client.event
