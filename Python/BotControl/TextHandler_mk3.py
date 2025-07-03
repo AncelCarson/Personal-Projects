@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 24/2/2024
+### Updated: 3/7/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -34,6 +34,7 @@ from dotenv import load_dotenv
 from Modules.Roller import roller
 from Modules.MenuMaker import menu
 from Modules.MenuMaker import makeMenu
+from Modules.User_Processor import User_Processor as UP
 
 load_dotenv()
 BOT_LOG = os.getenv('BOT_LOG')
@@ -43,7 +44,7 @@ ENV = os.getenv('ENV')
 class TextHandler:
     """Class Docstring.
 
-    Variables:
+    Attributes:
         queues (List -> Queue): Input and Output queues
         userId (str/int): Id of the user sending a message
         title (str): Title of the user
@@ -181,8 +182,9 @@ class Tasks:
     def DM(content, handler):
         """Sends a DM to the user for information"""
         handler.mode = "thinking"
-        data = handler.handleInput, handler.handlePrint, content, handler
-        handler.thread = Thread(target=aboutYou, args = data, daemon=True)
+        userInstance = UP(handler.interface, handler.handleInput, handler.handlePrint)
+        data = content, handler, day_greeting()[0]
+        handler.thread = Thread(target=userInstance.aboutYou, args = data, daemon=True)
         handler.thread.start()
         return ""
 
@@ -279,30 +281,12 @@ def responseTest(handleIn, handleOut):
         handleOut (Print): Custom Output Statement for the Text Handler
     """
     handleOut("This is a call and response test")
-    handleIn("What is response 1?")
-    handleIn("What is response 2?")
+    response1 = handleIn("What is response 1?")
+    response2 = handleIn("What is response 2?")
     handleOut("Pause for effect")
     sleep(5)
-    handleIn("Response 3?")
-
-def aboutYou(handleIn, handleOut, content, handler):
-    """Tests the Response processing of the text handler.
-    
-    Parameters:
-        handleIn (Input): Custom Input Statement for the Text Handler
-        handleOut (Print): Custom Output Statement for the Text Handler
-        content (str): Message from the user
-        handler (TextHandler): Object for the current Thread
-    """
-    greeting = day_greeting()
-    if len(content) == 1:
-        content.append(handler.userId)
-    handler.mode = "userSetTest"
-    handleOut(f'Good {greeting[0]} {content[1]}. I am here to assist you')
-    name = handleIn("Would you please tell me your First and Last Name?")
-    handleOut("Are you Male (M) or Female (F)?")
-    selection = handleIn("Please answer with a single Character")
-    handleOut(f'Thank you {name} for answering {selection}. I will update your data')
+    response3 = handleIn("Response 3?")
+    handleOut(f"Here is what you said\n> {response1}\n> {response2}\n> {response3}")
 
 # Self Program Call
 if __name__ == '__main__':

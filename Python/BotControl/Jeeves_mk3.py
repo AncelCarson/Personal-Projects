@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### UPdated: 7/10/2024
+### Updated: 3/7/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### Jeeves_mk3.py
@@ -51,6 +51,7 @@ BERG_BARN_GUILD = int(os.getenv('BERG_BARN_GUILD'))
 NOTHING_GUILD = int(os.getenv('NOTHING_GUILD'))
 ADMIN = int(os.getenv('ADMIN_ID'))
 GIT_LOG = os.getenv('GIT_LOG')
+ENV = os.getenv('ENV')
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -71,9 +72,10 @@ async def on_ready():
     guild = client.get_guild(BERG_BARN_GUILD)
     adminDM = client.get_user(ADMIN)
     await adminDM.send("Jeeves has initialized")
-    if os.name == "posix":
-        with open(GIT_LOG, 'r', encoding="utf-8") as file:
-            await adminDM.send(file.read())
+    if ENV != "test":
+        if os.name == "posix":
+            with open(GIT_LOG, 'r', encoding="utf-8") as file:
+                await adminDM.send(file.read())
     print(
         f'{client.user} is connected to:',
         f'{guild.name} - id: {guild.id}',
@@ -117,11 +119,6 @@ async def on_member_join(member):
     """Requests title assignment when a new member joins."""
     await member.create_dm()
     await bot_in.put((member.id,f"DM {member.name}","Discord",member.dm_channel))
-    await asyncio.sleep(5)
-    message = "Please react below whether you are Male 'M' or Female 'F'"
-    msg = await member.dm_channel.send(message)
-    await msg.add_reaction('\U0001F1F2') #M
-    await msg.add_reaction('\U0001F1EB') #F
 
 #================   On Message      ================
 @client.event
