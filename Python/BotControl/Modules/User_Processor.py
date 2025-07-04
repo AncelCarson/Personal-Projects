@@ -79,15 +79,15 @@ class User_Processor():
                 self.handleOut(f'Wonderful to see you again {getTitle(userID)}')
                 self.handleOut('I will add this interface to my records for future reference')
                 self.addInterface(userID, handler.userId, self.interface)
+                self.handleOut('Close Thread!:!Your data has been stored')
                 return
-            self.handleOut('An unxpected error has occured. Please reach out to the admin')
-            return
         self.handleOut('We will now want to create a unique Key Code for yourself')
         userKey = makeKey(self.handleIn,self.handleOut)
         title = getSex(self.handleIn,self.handleOut)
         self.handleOut(f'Thank you {title} for answering my questions. I will update your data')
         userID = self.addUser(name, title, userKey)
         self.addInterface(userID, handler.userId, self.interface)
+        self.handleOut('Close Thread!:!Your data has been stored')
 
     def addUser(self, name: str, title: str, userKey: str) -> str:
         """Adds a new ueser to the user file"""
@@ -130,7 +130,7 @@ def getID(interfaceID: str, interface: str) -> str:
     userdf = pd.read_csv(userFile, dtype=str)
     try:
         userID = userdf.loc[userdf[interface] == interfaceID, 'UUID'].item()
-    except KeyError:
+    except ValueError:
         userID = None
         print(f"UUID Error: {interface} ID {interfaceID} is not in the user file")
     return userID
@@ -140,7 +140,7 @@ def getTitle(userID: str) -> str:
     userdf = pd.read_csv(userFile, dtype=str)
     try:
         title = userdf.loc[userdf['UUID'] == userID, 'Title'].item()
-    except KeyError:
+    except ValueError:
         title = "...you"
         print(f"Title Error: UUID {userID} is not in the user file")
     return title
@@ -150,7 +150,7 @@ def getName(userID: str) -> str:
     userdf = pd.read_csv(userFile, dtype=str)
     try:
         name = userdf.loc[userdf['UUID'] == userID, 'First_Name'].item()
-    except KeyError:
+    except ValueError:
         name = "...you"
         print(f"Name Error: UUID {userID} is not in the user file")
     return name

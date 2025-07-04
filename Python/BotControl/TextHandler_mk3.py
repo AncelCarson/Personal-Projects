@@ -71,7 +71,7 @@ class TextHandler:
 
     def __call__(self):
         message = f"Thread for {self.userId} has been called"
-        self.queues[1].put((message,"cmd","term"))
+        self.queues[1].put((message,"cmd","term","admin"))
         self.run()
 
     def __enter__(self):
@@ -91,6 +91,7 @@ class TextHandler:
                 self.messageIn(message)
             except queue.Empty:
                 continue
+        print(f'Thread {self} has been killed')
 
     def messageIn(self, message: str):
         """Splits incoming messages and sorts them via keywords.
@@ -134,7 +135,7 @@ class TextHandler:
                 print(e)
 
         for line in text:
-            self.queues[1].put((line,self.interface,self.location))
+            self.queues[1].put((line,self.interface,self.location,self.userId))
 
     def handlePrint(self, message: str):
         """Custom Print Statement to be passed to sub programs.
@@ -143,7 +144,7 @@ class TextHandler:
             self: TextHandler Instance
             message: Message to be sent to the interface
         """
-        self.queues[1].put((message,self.interface,self.location))
+        self.queues[1].put((message,self.interface,self.location,self.userId))
 
     def handleInput(self, message: str):
         """Custom Input Statement to be passed to sub programs.
@@ -156,7 +157,7 @@ class TextHandler:
             response (str): Message recieved from the user
         """
         self.mode = "waiting"
-        self.queues[1].put((message,self.interface,self.location))
+        self.queues[1].put((message,self.interface,self.location,self.userId))
         response = self.responseQueue.get()
         self.mode = "thinking"
         return response
