@@ -1,25 +1,32 @@
-# pylint: disable=invalid-name,bad-indentation,non-ascii-name
+# pylint: disable=invalid-name,non-ascii-name
 # -*- coding: utf-8 -*-
 
 ### Ancel Carson
 ### Created: 2/7/2025
-### Updated: 3/7/2025
+### Updated: 5/7/2025
 ### Windows 11
 ### Python command line, VSCode
 ### User_Processor.py
 
-"""A one line summary of the module or program, terminated by a period.
+"""User data processor for Jeeves.
 
-Leave one blank line.  The rest of this docstring should contain an
-overall description of the module or program.  Optionally, it may also
-contain a brief description of exported classes and functions and/or usage
-examples.
+This module handles the access to the user data files. It takes in requests,
+returns the required data, and will lock out the file if it is used in another
+process. 
 
 Classes:
-    Start:
+    User_Processor: Class to handle the writing to the user file
 
 Functions:
-   main: Driver of the program
+   checkKey: Checks to find that a user exists using name and user key
+   checkName: Checks to find that a user exists using name and user key
+   getID: Returns a user's ID based on the interface ID
+   getName: Returns a user's name based on their UserID
+   getPermission: Returns a user's permission level based on their UserID
+   getTitle: Returns a user's title based on their UserID
+
+Parameters:
+    userFile (str): The location of the user file
 """
 
 # Libraries
@@ -32,13 +39,15 @@ userFile = os.path.join(os.path.dirname(__file__), "users.csv")
 
 # Object Class
 class User_Processor():
-    """Class Docstring.
+    """Handles the creation of new users and writing to the user file.
 
     Attributes:
         fileLock (bool): The current state of the user file locked/unlocked (Default = False)
-    
+
     Functions:
-        aboutYou:
+        aboutYou: Runs the user setup process
+        addUser: Adds a new user to the user file
+        addInterface: Adds an interface ID for an existing user
     """
 
     fileLock = False
@@ -57,9 +66,9 @@ class User_Processor():
     def __exit__(self, *exc):
         pass
 
-    def aboutYou(self, content: str, handler, greeting: str) -> None:
+    def aboutYou(self, content: str, handler: object, greeting: str) -> None:
         """Tests the Response processing of the text handler.
-        
+
         Parameters:
             content (str): Message from the user
             handler (TextHandler): Object for the current Thread
@@ -82,19 +91,28 @@ class User_Processor():
                 self.handleOut('Close Thread!:!Your data has been stored')
                 return
         self.handleOut('We will now want to create a unique Key Code for yourself')
-        userKey = makeKey(self.handleIn,self.handleOut)
-        title = getSex(self.handleIn,self.handleOut)
+        userKey = _makeKey(self.handleIn,self.handleOut)
+        title = _getSex(self.handleIn,self.handleOut)
         self.handleOut(f'Thank you {title} for answering my questions. I will update your data')
         userID = self.addUser(name, title, userKey)
         self.addInterface(userID, handler.userId, self.interface)
         self.handleOut('Close Thread!:!Your data has been stored')
 
     def addUser(self, name: str, title: str, userKey: str) -> str:
-        """Adds a new ueser to the user file"""
+        """Adds a new user to the user file
+
+        Parameters:
+            name (str): A user's first and last name
+            title (str): A user's honorific
+            userKey (str): A user's chosen passphrase
+
+        Returns:
+            userID (str): A users unique ID
+        """
         first,last = name.split(" ")
         userID = str(uuid.uuid4())
         newRow = {'UUID':userID, 'First_Name': first, 'Last_Name': last,
-                  'Title': title, 'User_Key': userKey}
+                  'Title': title, 'User_Key': userKey, 'Permission': "User"}
         while User_Processor.fileLock is True:
             pass
         User_Processor.fileLock = True
@@ -105,7 +123,13 @@ class User_Processor():
         return userID
 
     def addInterface(self, userID: str, newID: str, interface: str) -> None:
-        """Adds a new Interface for a user in the user file"""
+        """Adds a new Interface for a user in the user file
+
+        Parameters:
+            userID (str): A users unique ID
+            newID (str): An ID being added from a new interface
+            interface (str): The source of the user input
+        """
         while User_Processor.fileLock is True:
             pass
         User_Processor.fileLock = True
@@ -115,59 +139,16 @@ class User_Processor():
         User_Processor.fileLock = False
 
 
-def makeKey(handleIn, handleOut) -> str:
-    """Prompts the user for a Key Code"""
-    userKey = handleIn('What would you like your unique Key Code to be? '\
-                       'This code can be anything as long as you remember it.')
-    handleOut(f'To verify, you have selected the following:\n> {userKey}')
-    selection = handleIn('Is this correct? (Y/N)').upper()
-    if selection == "Y":
-        return userKey
-    return makeKey(handleIn, handleOut)
-
-def getID(interfaceID: str, interface: str) -> str:
-    """Returns a user's unique ID based on an interface ID"""
-    userdf = pd.read_csv(userFile, dtype=str)
-    try:
-        userID = userdf.loc[userdf[interface] == interfaceID, 'UUID'].item()
-    except ValueError:
-        userID = None
-        print(f"UUID Error: {interface} ID {interfaceID} is not in the user file")
-    return userID
-
-def getTitle(userID: str) -> str:
-    """Gets a user's title based off their ID"""
-    userdf = pd.read_csv(userFile, dtype=str)
-    try:
-        title = userdf.loc[userdf['UUID'] == userID, 'Title'].item()
-    except ValueError:
-        title = "...you"
-        print(f"Title Error: UUID {userID} is not in the user file")
-    return title
-
-def getName(userID: str) -> str:
-    """Gets a user's name based on their ID and an interface"""
-    userdf = pd.read_csv(userFile, dtype=str)
-    try:
-        name = userdf.loc[userdf['UUID'] == userID, 'First_Name'].item()
-    except ValueError:
-        name = "...you"
-        print(f"Name Error: UUID {userID} is not in the user file")
-    return name
-
-def checkName(name: str) -> str|None:
-    """Checks if a name exists inside of the user file. Returns the UserID if it does"""
-    userdf = pd.read_csv(userFile, dtype=str)
-    first,last = name.split(" ")
-    users = userdf.loc[(userdf['First_Name'] == first) &
-                        (userdf['Last_Name'] == last),
-                        'UUID'].values
-    if len(users) == 0:
-        users = None
-    return users
-
 def checkKey(name: str, userKey: str) -> str|None:
-    """Checks is a user's name and key match. If it does, it passes the UserID"""
+    """Checks is a user's name and key match. If it does, it passes the UserID
+
+    Parameters:
+        name (str): A user's first and last name
+        userKey (str): A user's chosen passphrase
+
+    Returns:
+        userID (str|None): A users unique ID or None if no user was found
+    """
     userdf = pd.read_csv(userFile, dtype=str)
     first,last = name.split(" ")
     try:
@@ -179,12 +160,125 @@ def checkKey(name: str, userKey: str) -> str|None:
         userID = None
     return userID
 
-def getSex(handleIn, handleOut) -> str:
-    """Runs a loop to get a user's sex in case the input is not correct """
+def checkName(name: str) -> str|None:
+    """Checks if a name exists inside of the user file. Returns the UserID if it does
+
+    Parameters:
+        name (str): A user's first and last name
+
+    Returns:
+        userID (str|None): A list of users with a certain name or None if no user was found
+    """
+    userdf = pd.read_csv(userFile, dtype=str)
+    first,last = name.split(" ")
+    users = userdf.loc[(userdf['First_Name'] == first) &
+                        (userdf['Last_Name'] == last),
+                        'UUID'].values
+    if len(users) == 0:
+        users = None
+    return users
+
+def getID(interfaceID: str, interface: str) -> str:
+    """Returns a user's unique ID based on an interface ID
+
+    Parameters:
+        interfaceID (str): A users ID from a specific interface
+        interface (str): The source of the user input
+
+    Returns:
+        userID (str): A users unique ID
+    """
+    userdf = pd.read_csv(userFile, dtype=str)
+    try:
+        userID = userdf.loc[userdf[interface] == interfaceID, 'UUID'].item()
+    except ValueError:
+        userID = None
+        print(f"UUID Error: {interface} ID {interfaceID} is not in the user file")
+    return userID
+
+def getName(userID: str) -> str:
+    """Gets a user's name based on their ID and an interface
+
+    Parameters:
+        userID (str): A users unique ID
+
+    Returns:
+        name (str): A user's first name
+    """
+    userdf = pd.read_csv(userFile, dtype=str)
+    try:
+        name = userdf.loc[userdf['UUID'] == userID, 'First_Name'].item()
+    except ValueError:
+        name = "...you"
+        print(f"Name Error: UUID {userID} is not in the user file")
+    return name
+
+def getPermission(userID: str) -> str:
+    """Returns a users permission level given their UserID
+
+    Parameters:
+        userID (str): A users unique ID
+
+    Returns:
+        permission (str): A user's permission level
+    """
+    userdf = pd.read_csv(userFile, dtype=str)
+    try:
+        permission = userdf.loc[userdf['UUID'] == userID, 'Permission'].item()
+    except ValueError:
+        permission = "User"
+        print(f"Permission Error: UUID {userID} is not in the user file")
+    return permission
+
+def getTitle(userID: str) -> str:
+    """Gets a user's title based off their ID
+
+    Parameters:
+        userID (str): A users unique ID
+
+    Returns:
+        title (str): A user's honorific
+    """
+    userdf = pd.read_csv(userFile, dtype=str)
+    try:
+        title = userdf.loc[userdf['UUID'] == userID, 'Title'].item()
+    except ValueError:
+        title = "...you"
+        print(f"Title Error: UUID {userID} is not in the user file")
+    return title
+
+def _getSex(handleIn: object, handleOut: object) -> str:
+    """Runs a loop to get a user's sex in case the input is not correct
+    
+    Parameters:
+        handleIn (queue): Custom input() method
+        handleOut (queue): Custom output() method
+    
+    Returns:
+        _ (str): "Sir" or "Madam"
+    """
     handleOut("Are you Male (M) or Female (F)?")
     selection = handleIn("Please answer with a single Character").upper()
     if selection not in ['M','F']:
         handleOut("I do appologize, that is not the type of answer I was looking for.")
         handleOut("Please enter the single character")
-        return getSex(handleIn, handleOut)
+        return _getSex(handleIn, handleOut)
     return "Sir" if selection == "M" else "Madam"
+
+def _makeKey(handleIn: object, handleOut: object) -> str:
+    """Prompts the user for a Key Code
+    
+    Parameters:
+        handleIn (queue): Custom input() method
+        handleOut (queue): Custom output() method
+    
+    Returns:
+        userKey (str): userKey (str): A user's chosen passphrase
+    """
+    userKey = handleIn('What would you like your unique Key Code to be? '\
+                       'This code can be anything as long as you remember it.')
+    handleOut(f'To verify, you have selected the following:\n> {userKey}')
+    selection = handleIn('Is this correct? (Y/N)').upper()
+    if selection == "Y":
+        return userKey
+    return _makeKey(handleIn, handleOut)

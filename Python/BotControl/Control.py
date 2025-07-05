@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 3/7/2025
+### Updated: 5/7/2025
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
@@ -61,7 +61,12 @@ def main():
    activeThreads = {}
 
    def flagAction(flag, userID):
-      """Performs actions on the threads based on Text Handler input"""
+      """Performs actions on the threads based on Text Handler input
+      
+      Parameters:
+         flag (str): Action to be performed
+         userID (str): ID of the user who initiated the action
+      """
       if flag == "Close Thread":
          activeHandlers[userID].mode = "kill"
          del activeQueues[userID]

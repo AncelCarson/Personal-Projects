@@ -3,41 +3,39 @@
 
 ### Ancel Carson
 ### Created: 2/3/2025
-### Updated: 2/3/2025
+### Updated: 5/7/2025
 ### Windows 11
 ### Python command line, VSCode
 ### Server_Actions.py
 
-"""A one line summary of the module or program, terminated by a period.
+"""A series of classes to manage specific server actions.
 
-Leave one blank line.  The rest of this docstring should contain an
-overall description of the module or program.  Optionally, it may also
-contain a brief description of exported classes and functions and/or usage
-examples.
+Each server will require different actions be performed. This module helps
+organize those actions for clarity and consistency.
 
 Classes:
-    A_lot_to_do:
+    A_lot_to_do: Processes for the A Lot to do About Nothing server
+    Berg_Barn: Processes for the Berg Barn
 """
 
 # Libraries
 
 # Object Class
 class A_lot_to_do:
-    """Class Docstring.
+    """Actions for the A Lot to do About Nothing Server.
     
     Functions:
         raw_reaction:
         member_join:
     """
     @staticmethod
-    async def raw_reaction(client, payload, guild):
-        """Function Docstring.
+    async def raw_reaction(client, payload, guild: int) -> None:
+        """Assigns a user role based on a reaction add.
 
         Parameters:
-            self (self): Ths instance of this class 
-
-        Returns:
-            None (none_type): This is an example
+            client (bot): The BOt Instance that caught the reaction add
+            payload (obj): The message package
+            guild (int): The server ID
         """
         user = payload.user_id
         reaction = payload.emoji
@@ -55,32 +53,27 @@ class A_lot_to_do:
                 await member.kick(reason = "They didn't make the cut")
 
     @staticmethod
-    async def member_join(client, member, guild):
-        """Function Docstring.
+    async def member_join(member, guild: int) -> None:
+        """Assigns a role to a new user.
 
         Parameters:
-            self (self): Ths instance of this class 
-
-        Returns:
-            None (none_type): This is an example
+            member (obj): Discord member object
         """
 
 class Berg_Barn:
-    """Class Docstring.
+    """Actions for the A Lot to do About Nothing Server.
     
     Functions:
-        raw_reaction:
-        member_join:
+        member_join: Handles role assignemtn on a new member joining the server
     """
     @staticmethod
-    async def member_join(member, title, guild):
-        """Function Docstring.
+    async def member_join(member, title: str, guild: int) -> None:
+        """Assigns a role to a new user.
 
         Parameters:
-            self (self): Ths instance of this class 
-
-        Returns:
-            None (none_type): This is an example
+            member (obj): Discord member object
+            title (str): a user's honorofic
+            guild (int): The server ID
         """
         Madam = guild.get_role(1061842851220160664)
         Monsieur = guild.get_role(1061842845981491221)
