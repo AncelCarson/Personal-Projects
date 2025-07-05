@@ -21,9 +21,9 @@ Functions:
    checkKey: Checks to find that a user exists using name and user key
    checkName: Checks to find that a user exists using name and user key
    getID: Returns a user's ID based on the interface ID
-   getName: Returns a user's name based on their UserID
-   getPermission: Returns a user's permission level based on their UserID
-   getTitle: Returns a user's title based on their UserID
+   getName: Returns a user's name based on their userID
+   getPermission: Returns a user's permission level based on their userID
+   getTitle: Returns a user's title based on their userID
 
 Parameters:
     userFile (str): The location of the user file
@@ -75,7 +75,7 @@ class User_Processor():
             greeting (str): Message from the TextHandler for the time of day
         """
         if len(content) == 1:
-            content.append(handler.userId)
+            content.append(handler.userID)
         handler.mode = "userSetTest"
         self.handleOut(f'Good {greeting}. I am here to assist you')
         name = self.handleIn("Would you please tell me your First and Last Name?")
@@ -87,7 +87,7 @@ class User_Processor():
             if userID is not None:
                 self.handleOut(f'Wonderful to see you again {getTitle(userID)}')
                 self.handleOut('I will add this interface to my records for future reference')
-                self.addInterface(userID, handler.userId, self.interface)
+                self.addInterface(userID, handler.userID, self.interface)
                 self.handleOut('Close Thread!:!Your data has been stored')
                 return
         self.handleOut('We will now want to create a unique Key Code for yourself')
@@ -95,7 +95,7 @@ class User_Processor():
         title = _getSex(self.handleIn,self.handleOut)
         self.handleOut(f'Thank you {title} for answering my questions. I will update your data')
         userID = self.addUser(name, title, userKey)
-        self.addInterface(userID, handler.userId, self.interface)
+        self.addInterface(userID, handler.userID, self.interface)
         self.handleOut('Close Thread!:!Your data has been stored')
 
     def addUser(self, name: str, title: str, userKey: str) -> str:
@@ -140,7 +140,7 @@ class User_Processor():
 
 
 def checkKey(name: str, userKey: str) -> str|None:
-    """Checks is a user's name and key match. If it does, it passes the UserID
+    """Checks is a user's name and key match. If it does, it passes the userID
 
     Parameters:
         name (str): A user's first and last name
@@ -161,7 +161,7 @@ def checkKey(name: str, userKey: str) -> str|None:
     return userID
 
 def checkName(name: str) -> str|None:
-    """Checks if a name exists inside of the user file. Returns the UserID if it does
+    """Checks if a name exists inside of the user file. Returns the userID if it does
 
     Parameters:
         name (str): A user's first and last name
@@ -190,7 +190,7 @@ def getID(interfaceID: str, interface: str) -> str:
     """
     userdf = pd.read_csv(userFile, dtype=str)
     try:
-        userID = userdf.loc[userdf[interface] == interfaceID, 'UUID'].item()
+        userID = userdf.loc[userdf[interface] == str(interfaceID), 'UUID'].item()
     except ValueError:
         userID = None
         print(f"UUID Error: {interface} ID {interfaceID} is not in the user file")
@@ -214,7 +214,7 @@ def getName(userID: str) -> str:
     return name
 
 def getPermission(userID: str) -> str:
-    """Returns a users permission level given their UserID
+    """Returns a users permission level given their userID
 
     Parameters:
         userID (str): A users unique ID

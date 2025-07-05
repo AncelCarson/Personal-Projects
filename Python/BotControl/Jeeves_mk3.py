@@ -167,7 +167,7 @@ async def send_bot_out():
     """While Loop reading the Output Queue"""
     while True:
         if not bot_out.empty():
-            content, _, channel = bot_out.get()
+            content, _, channel, _ = bot_out.get()
             await channel.send(content)
         await asyncio.sleep(1)
 

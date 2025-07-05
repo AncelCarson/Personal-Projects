@@ -51,6 +51,7 @@ def main():
    if ENV != "test":
       discordThread.start()
    else:
+      discordThread.start()
       commandThread.start()
 
    running = True
@@ -119,12 +120,12 @@ def main():
             flag,msg = ctx[0].split("!:!")
             ctx[0] = msg
             flagAction(flag,ctx[3])
-         # ctx = Message, Destination, Location
+         # ctx = Message, Destination, Location, UserID
          outQueues[ctx[1]].put((ctx))
 
       if not outQueues["cmd"].empty():
          ctx = outQueues["cmd"].get()
-         # ctx = Message, Destination, Location
+         # ctx = Message, Destination, Location, UserID
          print(ctx[0])
 
 def cmdTerm(input_queue,_):
