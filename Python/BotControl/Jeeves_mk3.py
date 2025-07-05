@@ -145,8 +145,21 @@ async def on_message(message):
         await message.channel.send('Jeeves is awaiting your command.')
         return
 
-    if not message.content.startswith('!'):
-        return
+    # if not message.content.startswith('!'):
+    #     if message.guild is None:
+    #         msg = message.content
+    #     else:
+    #         return
+    # else:
+    #     msg = message.content[1:]
+
+    if message.guild is None:
+        msg = message.content
+    else:
+        if not message.content.startswith('!'):
+            return
+        else:
+            msg = message.content[1:]
 
     if UserId not in activeUsers:
         # TODO: Assess Roles after adding user Table
@@ -159,7 +172,7 @@ async def on_message(message):
 
         activeUsers.append(UserId)
 
-    bot_in.put((UserId,message.content[1:],"Discord",message.channel))
+    bot_in.put((UserId,msg,"Discord",message.channel))
 
 #================   Non Event Functions      ================
 

@@ -122,6 +122,7 @@ class TextHandler:
 
             if ENV == "test":
                 commandDict = {
+                    "Jeeves": Tasks.Jeeves,
                     "admin": Tasks.admin,
                     "DM": Tasks.DM
                 }
