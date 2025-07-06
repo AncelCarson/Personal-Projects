@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 5/7/2025
+### Updated: 6/7/2025
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
@@ -51,7 +51,6 @@ def main():
    if ENV != "test":
       discordThread.start()
    else:
-      discordThread.start()
       commandThread.start()
 
    running = True

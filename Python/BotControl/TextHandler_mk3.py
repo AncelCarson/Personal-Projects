@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 27/5/2025
+### Updated: 6/7/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -174,7 +174,6 @@ class TextHandler:
                 commandDict = {
                     "Jeeves": Tasks.Jeeves,
                     "admin": Tasks.admin,
-                    "DM": Tasks.DM,
                     "Response": Tasks.Response,
                 }
 
@@ -339,12 +338,13 @@ class Tasks:
 def main():
     """Launches the TextHandler class and contains the run loop."""
     queues = [queue.Queue(),queue.Queue()]
-    thread = Thread(target=TextHandler(queues = queues), daemon = True)
-    thread.start()
+    handlerThread = Thread(target=TextHandler(queues = queues), daemon = True)
+    inputThread = Thread(target=cmdTerm,args=(queues[0],queues[1]), daemon=True)
+    handlerThread.start()
+    inputThread.start()
     while True:
         while not queues[1].empty():
             print(queues[1].get()[0])
-        queues[0].put(input())
         sleep(1)
 
 def day_greeting() -> list[str]:
@@ -385,6 +385,11 @@ def responseTest(handleIn, handleOut):
     sleep(5)
     response3 = handleIn("Response 3?")
     handleOut(f"Here is what you said\n> {response1}\n> {response2}\n> {response3}")
+
+def cmdTerm(input_queue,_):
+    """Terminal Interface"""
+    while True:
+        input_queue.put(input())
 
 # Self Program Call
 if __name__ == '__main__':
