@@ -66,16 +66,13 @@ class User_Processor():
     def __exit__(self, *exc):
         pass
 
-    def aboutYou(self, content: str, handler: object, greeting: str) -> None:
+    def aboutYou(self, handler: object, greeting: str) -> None:
         """Tests the Response processing of the text handler.
 
         Parameters:
-            content (str): Message from the user
             handler (TextHandler): Object for the current Thread
             greeting (str): Message from the TextHandler for the time of day
         """
-        if len(content) == 1:
-            content.append(handler.userID)
         handler.mode = "userSetTest"
         self.handleOut(f'Good {greeting}. I am here to assist you')
         name = self.handleIn("Would you please tell me your First and Last Name?")

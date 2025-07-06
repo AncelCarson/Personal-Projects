@@ -124,7 +124,8 @@ class TextHandler:
                 commandDict = {
                     "Jeeves": Tasks.Jeeves,
                     "admin": Tasks.admin,
-                    "DM": Tasks.DM
+                    "DM": Tasks.DM,
+                    "Response": Tasks.Response,
                 }
 
             try:
@@ -197,9 +198,13 @@ class Tasks:
         Returns:
             _ (str): The massage back out to the user
         """
+        if content != "DM":
+            if UP.getPermission(handler.userID) == "Admin":
+                handler.handlePrint(f'DM User:{content.split(" ")[1]}!:!A DM will now be sent')
+                return ""
         handler.mode = "thinking"
         userInstance = UPC(handler.interface, handler.handleInput, handler.handlePrint)
-        data = content, handler, day_greeting()[0]
+        data = handler, day_greeting()[0]
         handler.thread = Thread(target=userInstance.aboutYou, args = data, daemon=True)
         handler.thread.start()
         return ""

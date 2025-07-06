@@ -119,16 +119,16 @@ async def on_reaction_add(reaction, user):
 async def on_member_join(member):
     """Requests title assignment when a new member joins."""
     serverDict = {
-        BERG_BARN_GUILD: SA.Berg_Barn.member_join
+        BERG_BARN_GUILD: SA.Berg_Barn.member_join,
     }
-    if member.guild in serverDict:
+    if member.guild.id in serverDict:
         userID = UP.getID(member.id,"Discord")
         if userID is not None:
             title = UP.getTitle(userID)
             await serverDict[member.guild](client, member, title, member.guild_id)
         else:
             await member.create_dm()
-            await bot_in.put((member.id,f"DM {member.name}","Discord",member.dm_channel))
+            bot_in.put((member.id,f"DM","Discord",member.dm_channel))
 
 #================   On Message      ================
 @client.event
@@ -145,32 +145,20 @@ async def on_message(message):
         await message.channel.send('Jeeves is awaiting your command.')
         return
 
-    # if not message.content.startswith('!'):
-    #     if message.guild is None:
-    #         msg = message.content
-    #     else:
-    #         return
-    # else:
-    #     msg = message.content[1:]
+    if UserId not in activeUsers:
+        userID = UP.getID(UserId,"Discord")
+        if userID is None:
+            guild = message.guild
+            member = guild.get_member(message.author.id)
+            await on_member_join(member)
+        activeUsers.append(UserId)
 
     if message.guild is None:
         msg = message.content
     else:
         if not message.content.startswith('!'):
             return
-        else:
-            msg = message.content[1:]
-
-    if UserId not in activeUsers:
-        # TODO: Assess Roles after adding user Table
-        # for role in message.author.roles:
-        #     if role.id == 1061842845981491221:
-        #         title = "Sir"
-        #     elif role.id == 1061842851220160664:
-        #         title = "Madam"
-        #     else: title = "...you"
-
-        activeUsers.append(UserId)
+        msg = message.content[1:]
 
     bot_in.put((UserId,msg,"Discord",message.channel))
 
