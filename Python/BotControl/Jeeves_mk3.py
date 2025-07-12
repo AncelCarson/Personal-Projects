@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 3/7/2025
+### Updated: 11/7/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### Jeeves_mk3.py
@@ -50,6 +50,7 @@ load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
 BERG_BARN_GUILD = int(os.getenv('BERG_BARN_GUILD'))
 NOTHING_GUILD = int(os.getenv('NOTHING_GUILD'))
+MINES_GUILD = int(os.getenv('MINES_GUILD'))
 ADMIN = int(os.getenv('ADMIN_ID'))
 GIT_LOG = os.getenv('GIT_LOG')
 ENV = os.getenv('ENV')
@@ -120,15 +121,16 @@ async def on_member_join(member):
     """Requests title assignment when a new member joins."""
     serverDict = {
         BERG_BARN_GUILD: SA.Berg_Barn.member_join,
+        MINES_GUILD: lambda a,b,c,d: a+b+c+d
     }
     if member.guild.id in serverDict:
-        userID = UP.getID(member.id,"Discord")
         if userID is not None:
             title = UP.getTitle(userID)
             await serverDict[member.guild](client, member, title, member.guild_id)
+            userID = UP.getID(member.id,"Discord")
         else:
             await member.create_dm()
-            bot_in.put((member.id,f"DM","Discord",member.dm_channel))
+            bot_in.put((member.id,"DM","Discord",member.dm_channel))
 
 #================   On Message      ================
 @client.event
