@@ -124,10 +124,10 @@ async def on_member_join(member):
         MINES_GUILD: lambda a,b,c,d: a+b+c+d
     }
     if member.guild.id in serverDict:
+        userID = UP.getID(member.id,"Discord")
         if userID is not None:
             title = UP.getTitle(userID)
             await serverDict[member.guild](client, member, title, member.guild_id)
-            userID = UP.getID(member.id,"Discord")
         else:
             await member.create_dm()
             bot_in.put((member.id,"DM","Discord",member.dm_channel))
@@ -136,10 +136,10 @@ async def on_member_join(member):
 @client.event
 async def on_message(message):
     """Recieves in message from Discord and passes it to the TextHandler."""
-    UserId = message.author.id
+    DiscordID = message.author.id
 
     # Check that Jeeves does not respond to his own message.
-    if UserId == client.user.id:
+    if DiscordID == client.user.id:
         return
 
     if message.content.startswith('Bot Check'):
@@ -147,13 +147,13 @@ async def on_message(message):
         await message.channel.send('Jeeves is awaiting your command.')
         return
 
-    if UserId not in activeUsers:
-        userID = UP.getID(UserId,"Discord")
+    if DiscordID not in activeUsers:
+        userID = UP.getID(DiscordID,"Discord")
         if userID is None:
             guild = message.guild
             member = guild.get_member(message.author.id)
             await on_member_join(member)
-        activeUsers.append(UserId)
+        activeUsers.append(DiscordID)
 
     if message.guild is None:
         msg = message.content
@@ -162,7 +162,7 @@ async def on_message(message):
             return
         msg = message.content[1:]
 
-    bot_in.put((UserId,msg,"Discord",message.channel))
+    bot_in.put((DiscordID,msg,"Discord",message.channel))
 
 #================   Non Event Functions      ================
 
