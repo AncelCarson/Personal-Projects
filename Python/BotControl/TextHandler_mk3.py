@@ -127,20 +127,22 @@ class TextHandler:
                 self.iface.checkIn = True
             except queue.Empty:
                 pass
-            if time() - self.iface.lastActive > (30 * 60): #30 minute Timeout
-                if self.iface.mode == "waiting":
-                    if self.iface.checkIn:
+            if self.iface.mode == "waiting":
+                if self.iface.checkIn:
+                    if time() - self.iface.lastActive > (30 * 60): #30 minute Timeout
                         self.handlePrint(f"Pardon me {self.user.title}, "\
                                          "I am still awaiting your response.")
                         self.handlePrint("I will maintain this line of query for "\
-                                         "another 30 minutes before closing it out.")
+                                         "another 15 minutes before closing it out.")
                         self.iface.lastActive = time()
                         self.iface.checkIn = False
                         print(f'A check in for thread {self} has occured')
-                    else:
+                else:
+                    if time() - self.iface.lastActive > (15 * 60): #15 minute Timeout
                         self.handlePrint('Close Thread!:!I have closed this line of query. '\
                                          'To restart simply enter the initial command again.')
-                elif self.iface.mode == "idle":
+            elif self.iface.mode == "idle":
+                if time() - self.iface.lastActive > (15 * 60): #15 minute Timeout
                     self.handlePrint('Close Thread!:!')
         print(f'Thread {self} has been killed')
 
