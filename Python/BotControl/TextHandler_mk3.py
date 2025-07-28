@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 5/7/2025
+### Updated: 27/5/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -15,6 +15,8 @@ location for processing. Once a response is recieved, it processes it and
 prints it to the correct location.
 
 Classes:
+    userData: Imformation about the user who started the thread
+    threadData: Instance information about the thread
     TextHandler: Class made to handle incoming and outgoing text
 
 Functions:
@@ -26,9 +28,10 @@ Functions:
 # Libraries
 import os
 import queue
-from time import sleep
+from time import sleep, time
 from threading import Thread
 from datetime import datetime
+from dataclasses import dataclass
 from dotenv import load_dotenv
 
 import Modules.User_Processor as UP
@@ -41,12 +44,46 @@ load_dotenv()
 BOT_LOG = os.getenv('BOT_LOG')
 ENV = os.getenv('ENV')
 
-# Object Class
-class TextHandler:
-    """Class Docstring.
+@dataclass
+class userData:
+    """User Information for the instance.
 
     Attributes:
-        queues (List -> Queue): Input and Output queues
+        userID (str/int): Id of the user sending a message
+        title (str): Title of the user
+        interface (str): What interface the message was recieved from
+        location (str): Responses to messages recieved from user
+    """
+    userID: str
+    title: str
+    interface: str
+    location: str
+
+@dataclass
+class threadData:
+    """Thread Information for the instance.
+
+    Attributes:
+        queues (tuple -> Queue): Input and Output queues
+        mode (str): Current mode of the program
+        _thread (thread): Thread used to process a recieved message
+        responseQueue (Queue): Input Queue for subprograms
+        lastActive (time): The time of the last mesesage from the user
+        checkIn (bool): If the handler should give a check in before closing an instance
+    """
+    queues: tuple[queue.Queue]
+    mode: str
+    thread: Thread
+    responseQueue: queue.Queue
+    lastActive: time
+    checkIn: bool
+
+# Object Class
+class TextHandler:
+    """Text processor.
+
+    Attributes:
+        queues (tuple -> Queue): Input and Output queues
         userID (str/int): Id of the user sending a message
         title (str): Title of the user
         interface (str): What interface the message was recieved from
@@ -54,6 +91,8 @@ class TextHandler:
         mode (str): Current mode of the program
         _thread (thread): Thread used to process a recieved message
         responseQueue (Queue): Input Queue for subprograms
+        lastActive (time): The time of the last mesesage from the user
+        checkIn (bool): If the handler should give a check in before closing an instance
 
     Functions:
         messageIn: Directs an incoming message to the correct location
@@ -61,18 +100,12 @@ class TextHandler:
         responseProcess: A test for handling sequential responses
     """
     def __init__(self, queues=None, userID=None, title="...you", interface="cmd", location="term"):
-        self.queues = queues
-        self.userID = userID
-        self.title = title
-        self.interface = interface
-        self.location = location
-        self.mode = "idle"
-        self.thread = None
-        self.responseQueue = queue.Queue()
+        self.user = userData(userID, title, interface, location)
+        self.iface = threadData(queues, "idle", None, queue.Queue(), time(), True)
 
     def __call__(self):
-        message = f"Thread for {self.userID} has been called"
-        self.queues[1].put((message,"cmd","term","admin"))
+        message = f"Thread for {self.user.userID} has been called"
+        self.iface.queues[1].put((message,"cmd","term","admin"))
         self.run()
 
     def __enter__(self):
@@ -83,15 +116,32 @@ class TextHandler:
 
     def run(self) -> None:
         """Starts the text processing thread loop for the queue"""
-        while self.mode != "kill":
-            if self.mode == "thinking":
-                if not self.thread.is_alive():
-                    self.mode = "idle"
+        while self.iface.mode != "kill":
+            if self.iface.mode == "thinking":
+                if not self.iface.thread.is_alive():
+                    self.iface.mode = "idle"
             try:
-                message = self.queues[0].get(timeout=.1)
+                message = self.iface.queues[0].get(timeout=.1)
                 self.messageIn(message)
+                self.iface.lastActive = time()
+                self.iface.checkIn = True
             except queue.Empty:
-                continue
+                pass
+            if time() - self.iface.lastActive > (30 * 60): #30 minute Timeout
+                if self.iface.mode == "waiting":
+                    if self.iface.checkIn:
+                        self.handlePrint(f"Pardon me {self.user.title}, "\
+                                         "I am still awaiting your response.")
+                        self.handlePrint("I will maintain this line of query for "\
+                                         "another 30 minutes before closing it out.")
+                        self.iface.lastActive = time()
+                        self.iface.checkIn = False
+                        print(f'A check in for thread {self} has occured')
+                    else:
+                        self.handlePrint('Close Thread!:!I have closed this line of query. '\
+                                         'To restart simply enter the initial command again.')
+                elif self.iface.mode == "idle":
+                    self.handlePrint('Close Thread!:!')
         print(f'Thread {self} has been killed')
 
     def messageIn(self, message: str) -> None:
@@ -102,13 +152,13 @@ class TextHandler:
         """
         text=[]
 
-        if self.mode == "thinking":
-            text = [f"One monent {self.title}. I am processing the last request"]
+        if self.iface.mode == "thinking":
+            text = [f"One monent {self.user.title}. I am processing the last request"]
 
-        elif self.mode == "waiting":
-            self.responseQueue.put(message)
+        elif self.iface.mode == "waiting":
+            self.iface.responseQueue.put(message)
 
-        elif self.mode == "idle":
+        elif self.iface.mode == "idle":
 
             content = message.split(' ')
 
@@ -137,7 +187,7 @@ class TextHandler:
                 print(e)
 
         for line in text:
-            self.queues[1].put((line,self.interface,self.location,self.userID))
+            self.handlePrint(line)
 
     def handlePrint(self, message: str) -> None:
         """Custom Print Statement to be passed to sub programs.
@@ -145,7 +195,7 @@ class TextHandler:
         Parameters:
             message: Message to be sent to the interface
         """
-        self.queues[1].put((message,self.interface,self.location,self.userID))
+        self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
 
     def handleInput(self, message: str) -> object:
         """Custom Input Statement to be passed to sub programs.
@@ -156,10 +206,10 @@ class TextHandler:
         Returns:
             response (object): Message recieved from the user
         """
-        self.mode = "waiting"
-        self.queues[1].put((message,self.interface,self.location,self.userID))
-        response = self.responseQueue.get()
-        self.mode = "thinking"
+        self.iface.mode = "waiting"
+        self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
+        response = self.iface.responseQueue.get()
+        self.iface.mode = "thinking"
         return response
 
 class Tasks:
@@ -185,7 +235,7 @@ class Tasks:
             _ (str): The massage back out to the user
         """
         greeting = day_greeting()
-        return [f"Good {greeting[0]} {handler.title}. {greeting[1]}"]
+        return [f"Good {greeting[0]} {handler.user.title}. {greeting[1]}"]
 
     @staticmethod
     def DM(content: str, handler: TextHandler) -> str:
@@ -199,14 +249,14 @@ class Tasks:
             _ (str): The massage back out to the user
         """
         if content != "DM":
-            if UP.getPermission(handler.userID) == "Admin":
+            if UP.getPermission(handler.user.userID) == "Admin":
                 handler.handlePrint(f'DM User:{content.split(" ")[1]}!:!A DM will now be sent')
                 return ""
-        handler.mode = "thinking"
-        userInstance = UPC(handler.interface, handler.handleInput, handler.handlePrint)
+        handler.iface.mode = "thinking"
+        userInstance = UPC(handler.user.interface, handler.handleInput, handler.handlePrint)
         data = handler, day_greeting()[0]
-        handler.thread = Thread(target=userInstance.aboutYou, args = data, daemon=True)
-        handler.thread.start()
+        handler.iface.thread = Thread(target=userInstance.aboutYou, args = data, daemon=True)
+        handler.iface.thread.start()
         return ""
 
     @staticmethod
@@ -220,10 +270,10 @@ class Tasks:
         Returns:
             _ (str): The massage back out to the user
         """
-        handler.mode = "thinking"
+        handler.iface.mode = "thinking"
         io = handler.handleInput, handler.handlePrint
-        handler.thread = Thread(target=responseTest, args = io, daemon=True)
-        handler.thread.start()
+        handler.iface.thread = Thread(target=responseTest, args = io, daemon=True)
+        handler.iface.thread.start()
         return ""
 
     @staticmethod
@@ -232,7 +282,7 @@ class Tasks:
 
         Parameters:
             content (str): The message in from the user
-            _ (TesxHandler): Instance of the text handler
+            _ (TextHandler): Instance of the text handler
 
         Returns:
             _ (str): The massage back out to the user
@@ -253,8 +303,8 @@ class Tasks:
             _ (str): The massage back out to the user
         """
 
-        if UP.getPermission(handler.userID) != "Admin":
-            return [f"I am sorry {handler.title}, you do not have the required permissions."]
+        if UP.getPermission(handler.user.userID) != "Admin":
+            return [f"I am sorry {handler.user.title}, you do not have the required permissions."]
 
         if len(content) == 1:
             return ["Additional Admin Command Required"]
@@ -292,7 +342,7 @@ def main():
     thread = Thread(target=TextHandler(queues = queues), daemon = True)
     thread.start()
     while True:
-        if not queues[1].empty():
+        while not queues[1].empty():
             print(queues[1].get()[0])
         queues[0].put(input())
         sleep(1)
@@ -301,25 +351,25 @@ def day_greeting() -> list[str]:
     """Gives a user response message based on the time of day."""
     hour = datetime.now().hour
     if hour < 4:
-        time = "morning"
+        timePhrase = "morning"
         greeting = "Up late are we?"
     elif hour < 6:
-        time = "morning"
+        timePhrase = "morning"
         greeting = "Up early are we?"
     elif hour < 12:
-        time = "morning"
+        timePhrase = "morning"
         greeting = "I am listening."
     elif hour < 16:
-        time = "afternoon"
+        timePhrase = "afternoon"
         greeting = "I am listening."
     elif hour < 23:
-        time = "evening"
+        timePhrase = "evening"
         greeting = "I am listening."
     else:
-        time = "evening"
+        timePhrase = "evening"
         greeting = "Will this be another long night?"
 
-    return [time, greeting]
+    return [timePhrase, greeting]
 
 def responseTest(handleIn, handleOut):
     """Tests the Response processing of the text handler.

@@ -69,7 +69,7 @@ def main():
          userID (str): ID of the user who initiated the action
       """
       if flag == "Close Thread":
-         activeHandlers[userID].mode = "kill"
+         activeHandlers[userID].iface.mode = "kill"
          del activeQueues[userID]
          del activeHandlers[userID]
          del activeThreads[userID]
@@ -108,8 +108,8 @@ def main():
 
          # TODO: Remove this when multi-channel thread logic is implemented.
          # Makes the bot respond to the thread the question was asked in.
-         activeHandlers[ctx[0]].interface = ctx[2]
-         activeHandlers[ctx[0]].location = ctx[3]
+         activeHandlers[ctx[0]].user.interface = ctx[2]
+         activeHandlers[ctx[0]].user.location = ctx[3]
 
          activeQueues[ctx[0]][0].put(ctx[1])
 
@@ -118,8 +118,10 @@ def main():
          ctx = list(output_queue.get())
          if "!:!" in ctx[0]:
             flag,msg = ctx[0].split("!:!")
-            ctx[0] = msg
             flagAction(flag,ctx[3])
+            if msg == "":
+               continue
+            ctx[0] = msg
          # ctx = Message, Destination, Location, UserID
          outQueues[ctx[1]].put((ctx))
 
