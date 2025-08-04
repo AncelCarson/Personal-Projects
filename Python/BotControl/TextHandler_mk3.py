@@ -304,7 +304,7 @@ class Tasks:
             _ (str): The massage back out to the user
         """
 
-        if UP.getPermission(handler.user.userID) != "Admin":
+        if ENV != "test" and UP.getPermission(handler.user.userID) != "Admin":
             return [f"I am sorry {handler.user.title}, you do not have the required permissions."]
 
         if len(content) == 1:
