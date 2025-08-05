@@ -183,7 +183,7 @@ class TextHandler:
 
             try:
                 if content[0] in commandDict:
-                    text = commandDict[content[0]](content[0], self)
+                    text = commandDict[content[0]](content, self)
 
             except Exception as e:
                 text = [f"Something has gone wrong. Please ask again: {e}"]
@@ -259,9 +259,9 @@ class Tasks:
         Returns:
             _ (str): The massage back out to the user
         """
-        if content != "DM":
+        if len(content) != 1:
             if UP.getPermission(handler.user.userID) == "Admin":
-                handler.handlePrint(f'DM User:{content.split(" ")[1]}!:!A DM will now be sent')
+                handler.handlePrint(f'DM User:{content[1]}!:!A DM will now be sent')
                 return ""
         handler.iface.mode = "thinking"
         userInstance = UPC(handler.user.interface, handler.handleInput, handler.handlePrint)
