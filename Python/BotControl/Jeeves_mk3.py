@@ -121,7 +121,6 @@ async def on_member_join(member):
     """Requests title assignment when a new member joins."""
     serverDict = {
         BERG_BARN_GUILD: SA.Berg_Barn.member_join,
-        MINES_GUILD: lambda a,b,c,d: a+b+c+d
     }
     if member.guild.id in serverDict:
         userID = UP.getID(member.id,"Discord")

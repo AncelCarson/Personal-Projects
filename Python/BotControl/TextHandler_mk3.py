@@ -177,13 +177,13 @@ class TextHandler:
             if ENV == "test":
                 commandDict = {
                     "Jeeves": Tasks.Jeeves,
-                    "admin": Tasks.admin,
                     "Response": Tasks.Response,
+                    "admin": Tasks.admin,
                 }
 
             try:
                 if content[0] in commandDict:
-                    text = commandDict[content[0]](content, self)
+                    text = commandDict[content[0]](content[0], self)
 
             except Exception as e:
                 text = [f"Something has gone wrong. Please ask again: {e}"]
@@ -209,7 +209,6 @@ class TextHandler:
         Returns:
             response (object): Message recieved from the user
         """
-        self.iface.mode = "waiting"
         self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
         response = self.iface.responseQueue.get()
         self.iface.mode = "thinking"
