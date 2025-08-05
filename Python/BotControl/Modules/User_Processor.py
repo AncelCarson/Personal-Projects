@@ -73,7 +73,7 @@ class User_Processor():
             handler (TextHandler): Object for the current Thread
             greeting (str): Message from the TextHandler for the time of day
         """
-        handler.mode = "userSetTest"
+        handler.setMode("userSetTest")
         self.handleOut(f'Good {greeting}. I am here to assist you')
         name = self.handleIn("Would you please tell me your First and Last Name?")
         if checkName(name) is not None:
@@ -84,7 +84,7 @@ class User_Processor():
             if userID is not None:
                 self.handleOut(f'Wonderful to see you again {getTitle(userID)}')
                 self.handleOut('I will add this interface to my records for future reference')
-                self.addInterface(userID, handler.userID, self.interface)
+                self.addInterface(userID, handler.user.userID, self.interface)
                 self.handleOut('Close Thread!:!Your data has been stored')
                 return
         self.handleOut('We will now want to create a unique Key Code for yourself')
@@ -92,7 +92,7 @@ class User_Processor():
         title = _getSex(self.handleIn,self.handleOut)
         self.handleOut(f'Thank you {title} for answering my questions. I will update your data')
         userID = self.addUser(name, title, userKey)
-        self.addInterface(userID, handler.userID, self.interface)
+        self.addInterface(userID, handler.user.userID, self.interface)
         self.handleOut('Close Thread!:!Your data has been stored')
 
     def addUser(self, name: str, title: str, userKey: str) -> str:
