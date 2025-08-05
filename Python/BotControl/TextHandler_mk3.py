@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 6/7/2025
+### Updated: 5/8/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -166,18 +166,18 @@ class TextHandler:
 
             content = message.split(' ')
 
-            commandDict = {
-                "Jeeves": Tasks.Jeeves,
-                "DM": Tasks.DM,
-                "Response": Tasks.Response,
-                "roll": Tasks.roll,
-                "admin": Tasks.admin,
-            }
-
             if ENV == "test":
                 commandDict = {
                     "Jeeves": Tasks.Jeeves,
                     "Response": Tasks.Response,
+                    "admin": Tasks.admin,
+                }
+            else:
+                commandDict = {
+                    "Jeeves": Tasks.Jeeves,
+                    "DM": Tasks.DM,
+                    "Response": Tasks.Response,
+                    "roll": Tasks.roll,
                     "admin": Tasks.admin,
                 }
 
@@ -220,6 +220,9 @@ class TextHandler:
         Parameters:
             mode: The mode the thread should be set to
         """
+        if mode == "kill" and self.user.userID != None:
+            return [f"Close Thread!:!The handler mode will be set to {mode}"]
+
         self.iface.mode = mode
         return [f"The handler mode has been set to {mode}"]
 
@@ -330,10 +333,6 @@ class Tasks:
                 contents = [contents]
             return contents
 
-        adminDict = {
-            "log": log,
-        }
-
         if ENV == "test":
             adminDict = {
                 "test": lambda: ["You got the test message"],
@@ -341,6 +340,10 @@ class Tasks:
                 # "reboot":os.system('reboot'),
                 # "thread":None
             }
+        else:
+            adminDict = {
+            "log": log,
+        }
 
         if content[1] in adminDict:
             return adminDict[content[1]]()
