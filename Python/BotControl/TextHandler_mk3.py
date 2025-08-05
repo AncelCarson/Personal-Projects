@@ -66,7 +66,7 @@ class threadData:
     Attributes:
         queues (tuple -> Queue): Input and Output queues
         mode (str): Current mode of the program
-        _thread (thread): Thread used to process a recieved message
+        thread (thread): Thread used to process a recieved message
         responseQueue (Queue): Input Queue for subprograms
         lastActive (time): The time of the last mesesage from the user
         checkIn (bool): If the handler should give a check in before closing an instance
@@ -89,15 +89,17 @@ class TextHandler:
         interface (str): What interface the message was recieved from
         location (str): Responses to messages recieved from user
         mode (str): Current mode of the program
-        _thread (thread): Thread used to process a recieved message
+        thread (thread): Thread used to process a recieved message
         responseQueue (Queue): Input Queue for subprograms
         lastActive (time): The time of the last mesesage from the user
         checkIn (bool): If the handler should give a check in before closing an instance
 
     Functions:
+        run: 
         messageIn: Directs an incoming message to the correct location
-        responseIn: Creates a thread for processing a response
-        responseProcess: A test for handling sequential responses
+        handlePrint: A custom print function that can get passed to as sub program
+        handleInput: A custom input function that can get passed to as sub program
+        setMode: Sets the mode of the handler from an external source 
     """
     def __init__(self, queues=None, userID=None, title="...you", interface="cmd", location="term"):
         self.user = userData(userID, title, interface, location)
@@ -213,6 +215,15 @@ class TextHandler:
         self.iface.mode = "thinking"
         return response
 
+    def setMode(self, mode: str):
+        """Sets the mode of the thread from an external source.
+
+        Parameters:
+            mode: The mode the thread should be set to
+        """
+        self.iface.mode = mode
+        return [f"The handler mode has been set to {mode}"]
+
 class Tasks:
     """Class Docstring.
 
@@ -326,7 +337,8 @@ class Tasks:
 
         if ENV == "test":
             adminDict = {
-                "test": lambda: ["You got the test message"]
+                "test": lambda: ["You got the test message"],
+                "kill": lambda: handler.setMode("kill"),
                 # "reboot":os.system('reboot'),
                 # "thread":None
             }
