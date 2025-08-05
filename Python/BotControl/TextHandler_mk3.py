@@ -138,7 +138,7 @@ class TextHandler:
                                          "another 15 minutes before closing it out.")
                         self.iface.lastActive = time()
                         self.iface.checkIn = False
-                        print(f'A check in for thread {self} has occured')
+                        print(f'A check in on thread {self} for {self.user.userID} has occured')
                 else:
                     if time() - self.iface.lastActive > (15 * 60): #15 minute Timeout
                         self.handlePrint('Close Thread!:!I have closed this line of query. '\
@@ -146,7 +146,7 @@ class TextHandler:
             elif self.iface.mode == "idle":
                 if time() - self.iface.lastActive > (15 * 60): #15 minute Timeout
                     self.handlePrint('Close Thread!:!')
-        print(f'Thread {self} has been killed')
+        print(f'Thread {self} for {self.user.userID} has been killed')
 
     def messageIn(self, message: str) -> None:
         """Splits incoming messages and sorts them via keywords.
@@ -220,7 +220,7 @@ class TextHandler:
         Parameters:
             mode: The mode the thread should be set to
         """
-        if mode == "kill" and self.user.userID != None:
+        if mode == "kill" and self.user.userID is not None:
             return [f"Close Thread!:!The handler mode will be set to {mode}"]
 
         self.iface.mode = mode
@@ -361,6 +361,9 @@ def main():
     while True:
         while not queues[1].empty():
             print(queues[1].get()[0])
+        if not handlerThread.is_alive():
+            print("Program completing, press ENTER to close...")
+            break
         sleep(1)
 
 def day_greeting() -> list[str]:
