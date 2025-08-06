@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 6/7/2025
+### Updated: 5/8/2025
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
@@ -22,6 +22,7 @@ Functions:
 import os
 import queue
 import threading
+from time import time
 from dotenv import load_dotenv
 from Jeeves_mk3 import loadBot
 import Modules.User_Processor as UP
@@ -73,6 +74,16 @@ def main():
          del activeHandlers[userID]
          del activeThreads[userID]
          activeUsers.remove(userID)
+      elif flag == "Check Threads":
+         for user in activeUsers:
+            if user == userID:
+               continue
+            handler = activeHandlers[user]
+            lastTime = (time() - handler.iface.lastActive)/60
+            checkIn = handler.iface.checkIn
+            message = f"The last message for {user} was received {lastTime:.2f} minutes ago.\n"\
+                        f"A checkin has{"" if checkIn else " not"} occured"
+            activeHandlers[userID].handlePrint(message)
 
    while running:
       # Check for messages in the input queue

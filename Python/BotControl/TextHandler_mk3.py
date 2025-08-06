@@ -336,13 +336,15 @@ class Tasks:
         if ENV == "test":
             adminDict = {
                 "test": lambda: ["You got the test message"],
-                "kill": lambda: handler.setMode("kill"),
+                "close_threads": lambda: ["Close Threads!:!Closing all active threads"],
                 # "reboot":os.system('reboot'),
                 # "thread":None
             }
         else:
             adminDict = {
             "log": log,
+            "kill": lambda: handler.setMode("kill"),
+            "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
         }
 
         if content[1] in adminDict:
