@@ -84,6 +84,16 @@ def main():
             message = f"The last message for {user} was received {lastTime:.2f} minutes ago.\n"\
                         f"A checkin has{"" if checkIn else " not"} occured"
             activeHandlers[userID].handlePrint(message)
+      elif flag == "Close Threads":
+         for user in activeUsers:
+            handler = activeHandlers[user]
+            message = "The administrator has issued a close threads command. "\
+                      "I will close out this conversation in 5 minutes"
+            handler.handlePrint(message)
+            handler.iface.checkIn = True
+            handler.iface.closing = True
+            handler.iface.lastActive = time() - (10 * 60)
+            # flagAction("Close Thread", user)
 
    while running:
       # Check for messages in the input queue

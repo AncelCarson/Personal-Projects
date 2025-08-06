@@ -70,6 +70,7 @@ class threadData:
         responseQueue (Queue): Input Queue for subprograms
         lastActive (time): The time of the last mesesage from the user
         checkIn (bool): If the handler should give a check in before closing an instance
+        closing (bool): Notes if a thread has been given the close command
     """
     queues: tuple[queue.Queue]
     mode: str
@@ -77,6 +78,7 @@ class threadData:
     responseQueue: queue.Queue
     lastActive: time
     checkIn: bool
+    closing: bool
 
 # Object Class
 class TextHandler:
@@ -93,6 +95,7 @@ class TextHandler:
         responseQueue (Queue): Input Queue for subprograms
         lastActive (time): The time of the last mesesage from the user
         checkIn (bool): If the handler should give a check in before closing an instance
+        closing (bool): Notes if a thread has been given the close command
 
     Functions:
         run: 
@@ -103,7 +106,7 @@ class TextHandler:
     """
     def __init__(self, queues=None, userID=None, title="...you", interface="cmd", location="term"):
         self.user = userData(userID, title, interface, location)
-        self.iface = threadData(queues, "idle", None, queue.Queue(), time(), True)
+        self.iface = threadData(queues, "idle", None, queue.Queue(), time(), True, False)
 
     def __call__(self):
         message = f"Thread for {self.user.userID} has been called"
@@ -125,8 +128,9 @@ class TextHandler:
             try:
                 message = self.iface.queues[0].get(timeout=.1)
                 self.messageIn(message)
-                self.iface.lastActive = time()
-                self.iface.checkIn = True
+                if not self.iface.closing:
+                    self.iface.lastActive = time()
+                    self.iface.checkIn = True
             except queue.Empty:
                 pass
             if self.iface.mode == "waiting":
@@ -336,15 +340,15 @@ class Tasks:
         if ENV == "test":
             adminDict = {
                 "test": lambda: ["You got the test message"],
-                "close_threads": lambda: ["Close Threads!:!Closing all active threads"],
                 # "reboot":os.system('reboot'),
-                # "thread":None
             }
         else:
             adminDict = {
             "log": log,
             "kill": lambda: handler.setMode("kill"),
+            "test": lambda: ["You got the test message"],
             "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
+            "close_threads": lambda: ["Close Threads!:!Closing all active threads"],
         }
 
         if content[1] in adminDict:
