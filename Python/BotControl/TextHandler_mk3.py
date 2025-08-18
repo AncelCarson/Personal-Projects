@@ -357,7 +357,7 @@ class Tasks:
             "log": log,
             "kill": lambda: handler.setMode("kill"),
             "test": lambda: ["You got the test message"],
-            "reboot": lambda: reboot,
+            "reboot": reboot,
             "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
             "close_threads": close_threads,
         }
