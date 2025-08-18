@@ -28,6 +28,7 @@ Functions:
 # Libraries
 import os
 import queue
+import subprocess
 from time import sleep, time
 from threading import Thread
 from datetime import datetime
@@ -340,7 +341,7 @@ class Tasks:
             return contents
 
         def reboot():
-            os.system(f"./{REBOOT}")
+            subprocess.call(REBOOT)
             return ["System Rebooting in 5 Seconds..."]
 
         def close_threads():
