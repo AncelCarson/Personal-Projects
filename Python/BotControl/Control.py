@@ -90,7 +90,7 @@ def main():
             message = "The administrator has issued a close threads command. "\
                       "I will close out this conversation in 5 minutes"
             handler.handlePrint(message)
-            handler.iface.checkIn = True
+            handler.iface.checkIn = False
             handler.iface.closing = True
             handler.iface.lastActive = time() - (10 * 60)
             # flagAction("Close Thread", user)
