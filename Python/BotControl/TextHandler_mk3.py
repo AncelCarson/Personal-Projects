@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 5/8/2025
+### Updated: 17/8/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -42,6 +42,7 @@ from Modules.User_Processor import User_Processor as UPC
 
 load_dotenv()
 BOT_LOG = os.getenv('BOT_LOG')
+REBOOT = os.getenv('REBOOT')
 ENV = os.getenv('ENV')
 
 @dataclass
@@ -213,6 +214,7 @@ class TextHandler:
         Returns:
             response (object): Message recieved from the user
         """
+        self.iface.mode = "waiting"
         self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
         response = self.iface.responseQueue.get()
         self.iface.mode = "thinking"
@@ -337,18 +339,26 @@ class Tasks:
                 contents = [contents]
             return contents
 
+        def reboot():
+            os.system(f"./{REBOOT}")
+            return ["System Rebooting in 5 Seconds..."]
+
+        def close_threads():
+            handler.iface.mode = "waiting"
+            return ["Close Threads!:!Closing all active threads"]
+
         if ENV == "test":
             adminDict = {
                 "test": lambda: ["You got the test message"],
-                # "reboot":os.system('reboot'),
             }
         else:
             adminDict = {
             "log": log,
             "kill": lambda: handler.setMode("kill"),
             "test": lambda: ["You got the test message"],
+            "reboot": lambda: reboot,
             "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
-            "close_threads": lambda: ["Close Threads!:!Closing all active threads"],
+            "close_threads": close_threads,
         }
 
         if content[1] in adminDict:
