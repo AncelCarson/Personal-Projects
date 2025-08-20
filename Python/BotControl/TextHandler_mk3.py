@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 17/8/2025
+### Updated: 19/8/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -28,7 +28,6 @@ Functions:
 # Libraries
 import os
 import queue
-import subprocess
 from time import sleep, time
 from threading import Thread
 from datetime import datetime
@@ -43,7 +42,6 @@ from Modules.User_Processor import User_Processor as UPC
 
 load_dotenv()
 BOT_LOG = os.getenv('BOT_LOG')
-REBOOT = os.getenv('REBOOT')
 ENV = os.getenv('ENV')
 
 @dataclass
@@ -340,10 +338,6 @@ class Tasks:
                 contents = [contents]
             return contents
 
-        def reboot():
-            subprocess.call(REBOOT)
-            return ["System Rebooting in 5 Seconds..."]
-
         def close_threads():
             handler.iface.mode = "waiting"
             return ["Close Threads!:!Closing all active threads"]
@@ -357,7 +351,7 @@ class Tasks:
             "log": log,
             "kill": lambda: handler.setMode("kill"),
             "test": lambda: ["You got the test message"],
-            "reboot": reboot,
+            "reboot": lambda: ["Reboot!:!System Rebooting in 5 Seconds..."],
             "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
             "close_threads": close_threads,
         }

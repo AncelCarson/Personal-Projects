@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 5/8/2025
+### Updated: 19/8/2025
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
@@ -22,6 +22,7 @@ Functions:
 import os
 import queue
 import threading
+import subprocess
 from time import time
 from dotenv import load_dotenv
 from Jeeves_mk3 import loadBot
@@ -29,6 +30,7 @@ import Modules.User_Processor as UP
 from TextHandler_mk3 import TextHandler
 
 load_dotenv()
+REBOOT = os.getenv('REBOOT')
 ENV = os.getenv('ENV')
 
 # Main Function
@@ -94,6 +96,8 @@ def main():
             handler.iface.closing = True
             handler.iface.lastActive = time() - (10 * 60)
             # flagAction("Close Thread", user)
+      elif flag == "Reboot":
+         subprocess.call(REBOOT)
 
    while running:
       # Check for messages in the input queue
