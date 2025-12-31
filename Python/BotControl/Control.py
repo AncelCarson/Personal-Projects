@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 19/8/2025
+### Updated: 30/12/2025
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
@@ -55,6 +55,7 @@ def main():
       discordThread.start()
    else:
       commandThread.start()
+      discordThread.start()
 
    running = True
 
@@ -83,8 +84,10 @@ def main():
             handler = activeHandlers[user]
             lastTime = (time() - handler.iface.lastActive)/60
             checkIn = handler.iface.checkIn
+            lock = handler.iface.timeoutLock
             message = f"The last message for {user} was received {lastTime:.2f} minutes ago.\n"\
-                        f"A checkin has{' not' if checkIn else ''} occured"
+                        f"A checkin has{' not' if checkIn else ''} occured.\n"\
+                        f"The thread is{'' if lock else ' not'} locked."
             activeHandlers[userID].handlePrint(message)
       elif flag == "Close Threads":
          for user in activeUsers:

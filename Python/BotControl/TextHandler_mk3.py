@@ -71,6 +71,7 @@ class threadData:
         lastActive (time): The time of the last mesesage from the user
         checkIn (bool): If the handler should give a check in before closing an instance
         closing (bool): Notes if a thread has been given the close command
+        timeoutLock (bool): Locks a thread from closing for inportant processes
     """
     queues: tuple[queue.Queue]
     mode: str
@@ -79,6 +80,7 @@ class threadData:
     lastActive: time
     checkIn: bool
     closing: bool
+    timeoutLock :bool
 
 # Object Class
 class TextHandler:
@@ -100,13 +102,13 @@ class TextHandler:
     Functions:
         run: Main loop that cordinates message processing
         messageIn: Directs an incoming message to the correct location
-        handlePrint: A custom print function that can get passed to as sub program
-        handleInput: A custom input function that can get passed to as sub program
-        setMode: Sets the mode of the handler from an external source 
+        handlePrint: A custom print function that can get passed to a sub program
+        handleInput: A custom input function that can get passed to a sub program
+        setMode: Sets the mode of the handler from an external source
     """
     def __init__(self, queues=None, userID=None, title="...you", interface="cmd", location="term"):
         self.user = userData(userID, title, interface, location)
-        self.iface = threadData(queues, "idle", None, queue.Queue(), time(), True, False)
+        self.iface = threadData(queues, "idle", None, queue.Queue(), time(), True, False, False)
 
     def __call__(self):
         message = f"Thread for {self.user.userID} has been called"
@@ -154,6 +156,9 @@ class TextHandler:
 
     def _handle_timeouts(self, iface, now):
         """Filters timeouts between Idle and Waiting modes"""
+        if iface.timeoutLock:
+            return
+
         elapsed = now - iface.lastActive
 
         if iface.mode == "waiting":
@@ -235,7 +240,8 @@ class TextHandler:
             message: Message to be sent to the interface
         """
         self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
-        self.iface.lastActive = time()
+        if not self.iface.closing:
+            self.iface.lastActive = time()
 
     def handleInput(self, message: str) -> object:
         """Custom Input Statement to be passed to sub programs.
@@ -248,7 +254,8 @@ class TextHandler:
         """
         self.iface.mode = "waiting"
         self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
-        self.iface.lastActive = time()
+        if not self.iface.closing:
+            self.iface.lastActive = time()
         response = self.iface.responseQueue.get()
         self.iface.mode = "thinking"
         return response
@@ -373,7 +380,6 @@ class Tasks:
             return contents
 
         def close_threads():
-            handler.iface.mode = "waiting"
             return ["Close Threads!:!Closing all active threads"]
 
         if ENV == "test":
