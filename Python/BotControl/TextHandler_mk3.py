@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 19/8/2025
+### Updated: 30/12/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -98,7 +98,7 @@ class TextHandler:
         closing (bool): Notes if a thread has been given the close command
 
     Functions:
-        run: 
+        run: Main loop that cordinates message processing
         messageIn: Directs an incoming message to the correct location
         handlePrint: A custom print function that can get passed to as sub program
         handleInput: A custom input function that can get passed to as sub program
@@ -120,37 +120,69 @@ class TextHandler:
         pass
 
     def run(self) -> None:
-        """Starts the text processing thread loop for the queue"""
-        while self.iface.mode != "kill":
-            if self.iface.mode == "thinking":
-                if not self.iface.thread.is_alive():
-                    self.iface.mode = "idle"
-            try:
-                message = self.iface.queues[0].get(timeout=.1)
-                self.messageIn(message)
-                if not self.iface.closing:
-                    self.iface.lastActive = time()
-                    self.iface.checkIn = True
-            except queue.Empty:
-                pass
-            if self.iface.mode == "waiting":
-                if self.iface.checkIn:
-                    if time() - self.iface.lastActive > (30 * 60): #30 minute Timeout
-                        self.handlePrint(f"Pardon me {self.user.title}, "\
-                                         "I am still awaiting your response.")
-                        self.handlePrint("I will maintain this line of query for "\
-                                         "another 15 minutes before closing it out.")
-                        self.iface.lastActive = time()
-                        self.iface.checkIn = False
-                        print(f'A check in on thread {self} for {self.user.userID} has occured')
-                else:
-                    if time() - self.iface.lastActive > (15 * 60): #15 minute Timeout
-                        self.handlePrint('Close Thread!:!I have closed this line of query. '\
-                                         'To restart simply enter the initial command again.')
-            elif self.iface.mode == "idle":
-                if time() - self.iface.lastActive > (15 * 60): #15 minute Timeout
-                    self.handlePrint('Close Thread!:!')
-        print(f'Thread {self} for {self.user.userID} has been killed')
+        """Starts the text processing thread loop for the queue."""
+        iface = self.iface
+
+        while iface.mode != "kill":
+            now = time()
+
+            self._handle_thinking_mode(iface)
+            self._handle_queue(iface, now)
+            self._handle_timeouts(iface, now)
+
+        print(f"Thread {self} for {self.user.userID} has been killed")
+
+    def _handle_thinking_mode(self, iface):
+        """Resets the mode to Idle if no process is running."""
+        if iface.mode == "thinking" and not iface.thread.is_alive():
+            iface.mode = "idle"
+
+
+    def _handle_queue(self, iface, now):
+        """Tries to retrive a message from the Queue and resets the waiting timer"""
+        try:
+            message = iface.queues[0].get(timeout=0.1)
+        except queue.Empty:
+            return
+
+        self.messageIn(message)
+
+        if not iface.closing:
+            iface.lastActive = now
+            iface.checkIn = True
+
+
+    def _handle_timeouts(self, iface, now):
+        """Filters timeouts between Idle and Waiting modes"""
+        elapsed = now - iface.lastActive
+
+        if iface.mode == "waiting":
+            self._handle_waiting_timeouts(iface, elapsed)
+            return
+
+        if iface.mode == "idle" and elapsed > 15 * 60: # Idle + 15 Minute Timeout
+            self.handlePrint("Close Thread!:!")
+
+
+    def _handle_waiting_timeouts(self, iface, elapsed):
+        """Prompts the user for response if waiting with a timeout imminent"""
+        if iface.checkIn and elapsed > 30 * 60: # No check in + 30 Minute Timeout
+            self.handlePrint(
+                f"Pardon me {self.user.title}, I am still awaiting your response."
+            )
+            self.handlePrint(
+                "I will maintain this line of query for another 15 minutes before closing it out."
+            )
+            # iface.lastActive = time()
+            iface.checkIn = False
+            print(f"A check in on thread {self} for {self.user.userID} has occurred")
+            return
+
+        if not iface.checkIn and elapsed > 15 * 60: # Check in + 30 Minute Timeout
+            self.handlePrint(
+                "Close Thread!:!I have closed this line of query. "
+                "To restart simply enter the initial command again."
+            )
 
     def messageIn(self, message: str) -> None:
         """Splits incoming messages and sorts them via keywords.
@@ -203,6 +235,7 @@ class TextHandler:
             message: Message to be sent to the interface
         """
         self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
+        self.iface.lastActive = time()
 
     def handleInput(self, message: str) -> object:
         """Custom Input Statement to be passed to sub programs.
@@ -215,6 +248,7 @@ class TextHandler:
         """
         self.iface.mode = "waiting"
         self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
+        self.iface.lastActive = time()
         response = self.iface.responseQueue.get()
         self.iface.mode = "thinking"
         return response
@@ -345,6 +379,9 @@ class Tasks:
         if ENV == "test":
             adminDict = {
                 "test": lambda: ["You got the test message"],
+                "kill": lambda: handler.setMode("kill"),
+                "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
+                "close_threads": close_threads,
             }
         else:
             adminDict = {
