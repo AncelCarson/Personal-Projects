@@ -146,14 +146,6 @@ async def on_message(message):
         await message.channel.send('Jeeves is awaiting your command.')
         return
 
-    if DiscordID not in activeUsers:
-        userID = UP.getID(DiscordID,"Discord")
-        if userID is None:
-            guild = message.guild
-            member = guild.get_member(message.author.id)
-            await send_onboarding_dm(member)
-        activeUsers.append(DiscordID)
-
     if message.guild is None:
         msg = message.content
     else:
