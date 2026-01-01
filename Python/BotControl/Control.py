@@ -99,6 +99,9 @@ def main():
             handler.iface.closing = True
             handler.iface.lastActive = time() - (10 * 60)
             # flagAction("Close Thread", user)
+      elif "DM" in flag:
+         _,user,interface = flag.split(":")
+         outQueues[interface].put(([f"DM!:!{user}",interface,None,userID]))
       elif flag == "Reboot":
          subprocess.call(REBOOT)
 

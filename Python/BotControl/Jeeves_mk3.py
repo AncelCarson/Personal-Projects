@@ -35,6 +35,7 @@ Functions:
 
 # Libraries
 import os
+import re
 import asyncio
 from time import sleep
 from datetime import datetime
@@ -82,7 +83,7 @@ async def on_ready():
         f'{client.user} is connected to:',
         f'{guild.name} - id: {guild.id}',
         sep='\n')
-    await send_bot_out()
+    await read_bot_out()
 
 #================   On Reaction Add     ================
 @client.event
@@ -128,8 +129,7 @@ async def on_member_join(member):
             title = UP.getTitle(userID)
             await serverDict[member.guild](client, member, title, member.guild_id)
         else:
-            await member.create_dm()
-            bot_in.put((member.id,"DM","Discord",member.dm_channel))
+            await send_onboarding_dm(member)
 
 #================   On Message      ================
 @client.event
@@ -151,7 +151,7 @@ async def on_message(message):
         if userID is None:
             guild = message.guild
             member = guild.get_member(message.author.id)
-            await on_member_join(member)
+            await send_onboarding_dm(member)
         activeUsers.append(DiscordID)
 
     if message.guild is None:
@@ -165,24 +165,48 @@ async def on_message(message):
 
 #================   Non Event Functions      ================
 
-async def send_bot_out():
+async def process_flag(content: str):
+    """Processes commands from flagged messages"""
+    flag,msg = content.split("!:!")
+    if flag == "DM":
+        match = re.match(r"<@!?(\d+)>", msg)
+        if not match:
+            print(f"A DM was attempted with an invalid Discord Mention Format: {msg}")
+            return
+        user_id = int(match.group(1))
+        user = await client.fetch_user(user_id)
+        await send_onboarding_dm(user)
+
+async def read_bot_out():
     """While Loop reading the Output Queue"""
     while True:
         if not bot_out.empty():
             content, _, channel, _ = bot_out.get()
-            await channel.send(content)
+            if "!:!" in content:
+                await process_flag(content)
+            else:
+                await send_bot_out(content,channel)
         await asyncio.sleep(1)
-
-def loadBot(input_queue: str, output_queue: str):
-    """Function Docstring"""
-    asyncio.run(runBot(input_queue, output_queue))
-    client.run(TOKEN)
 
 async def runBot(input_queue: str, output_queue: str):
     """Function Docstring"""
     global bot_in, bot_out
     bot_in = input_queue
     bot_out = output_queue
+
+async def send_bot_out(content: str, channel: int):
+    """Sends a message to a Discord Channel"""
+    await channel.send(content)
+
+async def send_onboarding_dm(member):
+    """Creates a Direct message to a user and initializes a TextHandler Thread"""
+    await member.create_dm()
+    bot_in.put((member.id,"DM","Discord",member.dm_channel))
+
+def loadBot(input_queue: str, output_queue: str):
+    """Function Docstring"""
+    asyncio.run(runBot(input_queue, output_queue))
+    client.run(TOKEN)
 
 #finnaly we have to run our bot. previous stuffs are defining the functions of the bot
 if __name__ == '__main__':

@@ -321,7 +321,8 @@ class Tasks:
         """
         if len(content) != 1:
             if UP.getPermission(handler.user.userID) == "Admin":
-                handler.handlePrint(f'DM User:{content[1]}!:!A DM will now be sent')
+                handler.handlePrint(f'DM User:{content[1]}:{handler.user.interface}!:!'\
+                                    'A DM will now be sent')
                 return ""
         handler.iface.mode = "thinking"
         userInstance = UPC(handler.user.interface, handler.handleInput, handler.handlePrint)
