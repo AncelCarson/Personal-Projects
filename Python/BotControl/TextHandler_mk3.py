@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 30/12/2025
+### Updated: 31/12/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -105,6 +105,8 @@ class TextHandler:
         handlePrint: A custom print function that can get passed to a sub program
         handleInput: A custom input function that can get passed to a sub program
         setMode: Sets the mode of the handler from an external source
+        setTimeoutLock: Sets a lock to prevent timeout
+        removeTimeoutLock: Removes a lock to allow timeout
     """
     def __init__(self, queues=None, userID=None, title="...you", interface="cmd", location="term"):
         self.user = userData(userID, title, interface, location)
@@ -134,13 +136,13 @@ class TextHandler:
 
         print(f"Thread {self} for {self.user.userID} has been killed")
 
-    def _handle_thinking_mode(self, iface):
+    def _handle_thinking_mode(self, iface: threadData) -> None:
         """Resets the mode to Idle if no process is running."""
         if iface.mode == "thinking" and not iface.thread.is_alive():
             iface.mode = "idle"
 
 
-    def _handle_queue(self, iface, now):
+    def _handle_queue(self, iface: object, now: float) -> None:
         """Tries to retrive a message from the Queue and resets the waiting timer"""
         try:
             message = iface.queues[0].get(timeout=0.1)
@@ -154,7 +156,7 @@ class TextHandler:
             iface.checkIn = True
 
 
-    def _handle_timeouts(self, iface, now):
+    def _handle_timeouts(self, iface: threadData, now: float) -> None:
         """Filters timeouts between Idle and Waiting modes"""
         if iface.timeoutLock:
             return
@@ -169,7 +171,7 @@ class TextHandler:
             self.handlePrint("Close Thread!:!")
 
 
-    def _handle_waiting_timeouts(self, iface, elapsed):
+    def _handle_waiting_timeouts(self, iface: threadData, elapsed: float) -> None:
         """Prompts the user for response if waiting with a timeout imminent"""
         if iface.checkIn and elapsed > 30 * 60: # No check in + 30 Minute Timeout
             self.handlePrint(
@@ -212,6 +214,7 @@ class TextHandler:
                     "Jeeves": Tasks.Jeeves,
                     "Response": Tasks.Response,
                     "admin": Tasks.admin,
+                    "DM": Tasks.DM,
                 }
             else:
                 commandDict = {
@@ -260,7 +263,7 @@ class TextHandler:
         self.iface.mode = "thinking"
         return response
 
-    def setMode(self, mode: str):
+    def setMode(self, mode: str) -> None:
         """Sets the mode of the thread from an external source.
 
         Parameters:
@@ -271,6 +274,14 @@ class TextHandler:
 
         self.iface.mode = mode
         return [f"The handler mode has been set to {mode}"]
+
+    def setTimeoutLock(self) -> None:
+        """Sets the timeoutlock to prevent closing the thread."""
+        self.iface.timeoutLock = True
+
+    def releaseTimeoutLock(self) -> None:
+        """Removes the timeoutlock to allow closing the thread."""
+        self.iface.timeoutLock = False
 
 class Tasks:
     """Class Docstring.

@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 2/7/2025
-### Updated: 5/7/2025
+### Updated: 31/12/2025
 ### Windows 11
 ### Python command line, VSCode
 ### User_Processor.py
@@ -73,9 +73,9 @@ class User_Processor():
             handler (TextHandler): Object for the current Thread
             greeting (str): Message from the TextHandler for the time of day
         """
-        handler.setMode("userSetTest")
         self.handleOut(f'Good {greeting}. I am here to assist you')
         name = self.handleIn("Would you please tell me your First and Last Name?")
+        handler.setTimeoutLock()
         if checkName(name) is not None:
             self.handleOut('It appears I have that name in my system')
             self.handleOut('Will you please enter your user key for verification?')
@@ -85,6 +85,7 @@ class User_Processor():
                 self.handleOut(f'Wonderful to see you again {getTitle(userID)}')
                 self.handleOut('I will add this interface to my records for future reference')
                 self.addInterface(userID, handler.user.userID, self.interface)
+                handler.releaseTimeoutLock()
                 self.handleOut('Close Thread!:!Your data has been stored')
                 return
         self.handleOut('We will now want to create a unique Key Code for yourself')
@@ -93,6 +94,7 @@ class User_Processor():
         self.handleOut(f'Thank you {title} for answering my questions. I will update your data')
         userID = self.addUser(name, title, userKey)
         self.addInterface(userID, handler.user.userID, self.interface)
+        handler.releaseTimeoutLock()
         self.handleOut('Close Thread!:!Your data has been stored')
 
     def addUser(self, name: str, title: str, userKey: str) -> str:
@@ -274,6 +276,9 @@ def _makeKey(handleIn: object, handleOut: object) -> str:
     """
     userKey = handleIn('What would you like your unique Key Code to be? '\
                        'This code can be anything as long as you remember it.')
+    if userKey == "None":
+        handleOut('I do apologize, that is the one Key Code I cannot accept.\nPlease try again.')
+        return _makeKey(handleIn, handleOut)
     handleOut(f'To verify, you have selected the following:\n> {userKey}')
     selection = handleIn('Is this correct? (Y/N)').upper()
     if selection == "Y":
