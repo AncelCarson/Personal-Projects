@@ -123,7 +123,7 @@ def main():
             output_queue.put((initMsg, "cmd", "term"))
             activeQueues[ctx[0]] = [queue.Queue(),output_queue]
             activeHandlers[ctx[0]] = TextHandler(activeQueues[ctx[0]], ctx[0],
-                                                 "Sir", ctx[2], ctx[3])
+                                                 UP.getTitle(userID), ctx[2], ctx[3])
             activeThreads[ctx[0]] = threading.Thread(target=activeHandlers[ctx[0]], daemon=True)
             activeThreads[ctx[0]].start()
 
