@@ -209,21 +209,17 @@ class TextHandler:
 
             content = message.split(' ')
 
+            commandDict = {
+                "Jeeves": Tasks.Jeeves,
+                "DM": Tasks.DM,
+                "roll": Tasks.roll,
+                "admin": Tasks.admin,
+            }
+
             if ENV == "test":
-                commandDict = {
-                    "Jeeves": Tasks.Jeeves,
+                commandDict.update({
                     "Response": Tasks.Response,
-                    "admin": Tasks.admin,
-                    "DM": Tasks.DM,
-                }
-            else:
-                commandDict = {
-                    "Jeeves": Tasks.Jeeves,
-                    "DM": Tasks.DM,
-                    "Response": Tasks.Response,
-                    "roll": Tasks.roll,
-                    "admin": Tasks.admin,
-                }
+                })
 
             try:
                 if content[0] in commandDict:
@@ -394,22 +390,21 @@ class Tasks:
         def close_threads():
             return ["Close Threads!:!Closing all active threads"]
 
-        if ENV == "test":
-            adminDict = {
-                "test": lambda: ["You got the test message"],
-                "kill": lambda: handler.setMode("kill"),
-                "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
-                "close_threads": close_threads,
-            }
-        else:
-            adminDict = {
-            "log": log,
+        adminDict = {
             "kill": lambda: handler.setMode("kill"),
-            "test": lambda: ["You got the test message"],
             "reboot": lambda: ["Reboot!:!System Rebooting in 5 Seconds..."],
             "check_threads": lambda: ["Check Threads!:!Checking the active threads"],
             "close_threads": close_threads,
         }
+
+        if ENV == "test":
+            adminDict.update({
+                "test": lambda: ["You got the test message"],
+            })
+        else:
+            adminDict.update({
+                "log": log,
+            })
 
         if content[1] in adminDict:
             return adminDict[content[1]]()
