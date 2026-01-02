@@ -59,101 +59,109 @@ def main():
 
    running = True
 
-   activeUsers = []
+   activeSessions = []
    activeQueues = {}
    activeHandlers = {}
    activeThreads = {}
 
-   def flagAction(flag, userID):
+   def _flagAction(flag, sessionID):
       """Performs actions on the threads based on Text Handler input
       
       Parameters:
          flag (str): Action to be performed
-         userID (str): ID of the user who initiated the action
+         sessionID (str): ID of the session that initiated the action
       """
       if flag == "Close Thread":
-         activeHandlers[userID].iface.mode = "kill"
-         del activeQueues[userID]
-         del activeHandlers[userID]
-         del activeThreads[userID]
-         activeUsers.remove(userID)
+         activeHandlers[sessionID].iface.mode = "kill"
+         del activeQueues[sessionID]
+         del activeHandlers[sessionID]
+         del activeThreads[sessionID]
+         activeSessions.remove(sessionID)
       elif flag == "Check Threads":
-         for user in activeUsers:
-            if user == userID:
+         for session in activeSessions:
+            if session == sessionID:
                continue
-            handler = activeHandlers[user]
+            handler = activeHandlers[session]
             lastTime = (time() - handler.iface.lastActive)/60
             checkIn = handler.iface.checkIn
             lock = handler.iface.timeoutLock
-            message = f"The last message for {user} was received {lastTime:.2f} minutes ago.\n"\
+            message = f"The last message for {session} was received {lastTime:.2f} minutes ago.\n"\
                         f"A checkin has{' not' if checkIn else ''} occured.\n"\
                         f"The thread is{'' if lock else ' not'} locked."
-            activeHandlers[userID].handlePrint(message)
+            activeHandlers[sessionID].handlePrint(message)
       elif flag == "Close Threads":
-         for user in activeUsers:
-            handler = activeHandlers[user]
+         for session in activeSessions:
+            handler = activeHandlers[session]
             message = "The administrator has issued a close threads command. "\
                       "I will close out this conversation in 5 minutes"
             handler.handlePrint(message)
             handler.iface.checkIn = False
             handler.iface.closing = True
             handler.iface.lastActive = time() - (10 * 60)
-            # flagAction("Close Thread", user)
       elif "DM" in flag:
          _,user,interface = flag.split(":")
-         outQueues[interface].put(([f"DM!:!{user}",interface,None,userID]))
+         outQueues[interface].put(([f"DM!:!{user}",interface,None,sessionID]))
       elif flag == "Reboot":
          subprocess.call(REBOOT)
+
+   def _processInput(input_queue: queue) -> None:
+      ctx = list(input_queue.get())
+      # ctx = sourceId, Message, Source, Location
+      userID = UP.getID(ctx[0], ctx[2])
+      print(f"{userID}_{ctx[2]}_{ctx[3]}")
+      if userID is not None:
+         ctx[0] = userID
+         userName = UP.getName(userID)
+      else:
+         userName = "new user"
+      sessionID = f"{ctx[0]}_{ctx[2]}_{ctx[3]}"
+
+      if sessionID not in activeSessions:
+         activeSessions.append(sessionID)
+         initMsg = f"New thread Initalizing for {userName}"
+         output_queue.put((initMsg, "cmd", "term"))
+         activeQueues[sessionID] = [queue.Queue(),output_queue]
+         activeHandlers[sessionID] = TextHandler(activeQueues[sessionID], ctx[0],
+                                                UP.getTitle(userID), ctx[2], ctx[3])
+         activeThreads[sessionID] = threading.Thread(target=activeHandlers[sessionID], daemon=True)
+         activeThreads[sessionID].start()
+
+      # Process the message, add flags, and direct it to the appropriate program
+      print(f"{ctx[2]} passed message for {userName}: {ctx[1]}")
+      if "some condition" in ctx[1]:
+         # Modify the message if necessary and forward it to a secondary program
+         input_queue.put(("flagged_message", ctx[1]))
+      else:
+         # Handle or route the message as needed
+         pass
+
+      # TODO: Remove this when multi-channel thread logic is implemented.
+      # Makes the bot respond to the thread the question was asked in.
+      activeHandlers[sessionID].user.interface = ctx[2]
+      activeHandlers[sessionID].user.location = ctx[3]
+
+      activeQueues[sessionID][0].put(ctx[1])
+
+   def _processOutput(output_queue: queue) -> None:
+      ctx = list(output_queue.get())
+      # ctx = Message, Destination, Location, UserID
+      if "!:!" in ctx[0]:
+         sessionID = f"{ctx[3]}_{ctx[1]}_{ctx[2]}"
+         flag,msg = ctx[0].split("!:!")
+         _flagAction(flag,sessionID)
+         if msg == "":
+            return
+         ctx[0] = msg
+      outQueues[ctx[1]].put((ctx))
 
    while running:
       # Check for messages in the input queue
       if not input_queue.empty():
-         ctx = list(input_queue.get())
-         # ctx = sourceId, Message, Source, Location
-         userID = UP.getID(ctx[0], ctx[2])
-         if userID is not None:
-            ctx[0] = userID
-            userName = UP.getName(userID)
-         else:
-            userName = "new user"
-
-         if ctx[0] not in activeUsers:
-            activeUsers.append(ctx[0])
-            initMsg = f"New thread Initalizing for {userName}"
-            output_queue.put((initMsg, "cmd", "term"))
-            activeQueues[ctx[0]] = [queue.Queue(),output_queue]
-            activeHandlers[ctx[0]] = TextHandler(activeQueues[ctx[0]], ctx[0],
-                                                 UP.getTitle(userID), ctx[2], ctx[3])
-            activeThreads[ctx[0]] = threading.Thread(target=activeHandlers[ctx[0]], daemon=True)
-            activeThreads[ctx[0]].start()
-
-         # Process the message, add flags, and direct it to the appropriate program
-         print(f"{ctx[2]} passed message for {userName}: {ctx[1]}")
-         if "some condition" in ctx[1]:
-            # Modify the message if necessary and forward it to a secondary program
-            input_queue.put(("flagged_message", ctx[1]))
-         else:
-            # Handle or route the message as needed
-            pass
-
-         # TODO: Remove this when multi-channel thread logic is implemented.
-         # Makes the bot respond to the thread the question was asked in.
-         activeHandlers[ctx[0]].user.interface = ctx[2]
-         activeHandlers[ctx[0]].user.location = ctx[3]
-
-         activeQueues[ctx[0]][0].put(ctx[1])
+         _processInput(input_queue)
 
       # Additional logic or cleanup can go here
       if not output_queue.empty():
-         ctx = list(output_queue.get())
-         if "!:!" in ctx[0]:
-            flag,msg = ctx[0].split("!:!")
-            flagAction(flag,ctx[3])
-            if msg == "":
-               continue
-            ctx[0] = msg
-         # ctx = Message, Destination, Location, UserID
-         outQueues[ctx[1]].put((ctx))
+         _processOutput(output_queue)
 
       if not outQueues["cmd"].empty():
          ctx = outQueues["cmd"].get()
