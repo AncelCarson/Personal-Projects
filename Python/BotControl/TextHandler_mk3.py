@@ -252,9 +252,7 @@ class TextHandler:
             response (object): Message recieved from the user
         """
         self.iface.mode = "waiting"
-        self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
-        if not self.iface.closing:
-            self.iface.lastActive = time()
+        self.handlePrint(message)
         response = self.iface.responseQueue.get()
         self.iface.mode = "thinking"
         return response
