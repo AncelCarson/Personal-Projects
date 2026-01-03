@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 30/12/2025
+### Updated: 2/1/2025
 ### Windows 11
 ### Python command line, VSCode
 ### StartFile.py
@@ -64,7 +64,26 @@ def main():
    activeHandlers = {}
    activeThreads = {}
 
-   def _flagAction(flag, sessionID):
+   def _createSession(sessionID: str, ctx: list, userName: str, userID: str) -> None:
+      activeSessions.append(sessionID)
+      initMsg = f"New thread Initalizing for {userName}"
+      output_queue.put((initMsg, "cmd", "term"))
+      activeQueues[sessionID] = [queue.Queue(),output_queue]
+      activeHandlers[sessionID] = TextHandler(activeQueues[sessionID], ctx[0],
+                                             UP.getTitle(userID), ctx[2], ctx[3])
+      activeThreads[sessionID] = threading.Thread(target=activeHandlers[sessionID], daemon=True)
+      activeThreads[sessionID].start()
+
+   def _findUserSessions(sessionID: str, userID: str) -> list:
+      sessionList = ""
+      for session in activeSessions:
+         if session == sessionID:
+            continue
+         if userID in session:
+            sessionList += f"{session},"
+      return sessionList
+
+   def _flagAction(flag: str, sessionID: str) -> None:
       """Performs actions on the threads based on Text Handler input
       
       Parameters:
@@ -101,6 +120,17 @@ def main():
       elif "DM" in flag:
          _,user,interface = flag.split(":")
          outQueues[interface].put(([f"DM!:!{user}",interface,None,sessionID]))
+      elif "move_interface" in flag:
+         _,oldSession = flag.split(":")
+         newInterface = activeHandlers[sessionID].user.interface
+         newLocation = activeHandlers[sessionID].user.location
+         _flagAction("Close Thread",sessionID)
+         activeSessions.append(sessionID)
+         activeQueues[sessionID] = activeQueues.pop(oldSession)
+         activeHandlers[sessionID] = activeHandlers.pop(oldSession)
+         activeThreads[sessionID] = activeThreads.pop(oldSession)
+         activeSessions.remove(oldSession)
+         activeHandlers[sessionID].updateInterface(newInterface,newLocation)
       elif flag == "Reboot":
          subprocess.call(REBOOT)
 
@@ -108,7 +138,6 @@ def main():
       ctx = list(input_queue.get())
       # ctx = sourceId, Message, Source, Location
       userID = UP.getID(ctx[0], ctx[2])
-      print(f"{userID}_{ctx[2]}_{ctx[3]}")
       if userID is not None:
          ctx[0] = userID
          userName = UP.getName(userID)
@@ -117,14 +146,13 @@ def main():
       sessionID = f"{ctx[0]}_{ctx[2]}_{ctx[3]}"
 
       if sessionID not in activeSessions:
-         activeSessions.append(sessionID)
-         initMsg = f"New thread Initalizing for {userName}"
-         output_queue.put((initMsg, "cmd", "term"))
-         activeQueues[sessionID] = [queue.Queue(),output_queue]
-         activeHandlers[sessionID] = TextHandler(activeQueues[sessionID], ctx[0],
-                                                UP.getTitle(userID), ctx[2], ctx[3])
-         activeThreads[sessionID] = threading.Thread(target=activeHandlers[sessionID], daemon=True)
-         activeThreads[sessionID].start()
+         _createSession(sessionID, ctx, userName, userID)
+         if ctx[2] != "Discord" or "Direct Message" in str(ctx[3]):
+            sessionList = _findUserSessions(sessionID, ctx[0])
+            if sessionList != "":
+               message = f"move_interface {sessionList}"
+               activeQueues[sessionID][0].put(message)
+               return
 
       # Process the message, add flags, and direct it to the appropriate program
       print(f"{ctx[2]} passed message for {userName}: {ctx[1]}")
@@ -134,11 +162,6 @@ def main():
       else:
          # Handle or route the message as needed
          pass
-
-      # TODO: Remove this when multi-channel thread logic is implemented.
-      # Makes the bot respond to the thread the question was asked in.
-      activeHandlers[sessionID].user.interface = ctx[2]
-      activeHandlers[sessionID].user.location = ctx[3]
 
       activeQueues[sessionID][0].put(ctx[1])
 

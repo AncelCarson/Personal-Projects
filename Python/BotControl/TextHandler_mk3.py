@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 31/12/2025
+### Updated: 2/1/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -98,6 +98,8 @@ class TextHandler:
         lastActive (time): The time of the last mesesage from the user
         checkIn (bool): If the handler should give a check in before closing an instance
         closing (bool): Notes if a thread has been given the close command
+        timeoutLock (bool): Locks a thread from closing for inportant processes
+        lastOut (str): The last message that was sent to the user
 
     Functions:
         run: Main loop that cordinates message processing
@@ -107,10 +109,12 @@ class TextHandler:
         setMode: Sets the mode of the handler from an external source
         setTimeoutLock: Sets a lock to prevent timeout
         removeTimeoutLock: Removes a lock to allow timeout
+        updateInterface: Changes the interface ther Handler communicates to
     """
     def __init__(self, queues=None, userID=None, title="...you", interface="cmd", location="term"):
         self.user = userData(userID, title, interface, location)
         self.iface = threadData(queues, "idle", None, queue.Queue(), time(), True, False, False)
+        self.lastOut = ""
 
     def __call__(self):
         message = f"Thread for {self.user.userID} has been called"
@@ -210,15 +214,16 @@ class TextHandler:
             content = message.split(' ')
 
             commandDict = {
-                "Jeeves": Tasks.Jeeves,
-                "DM": Tasks.DM,
-                "roll": Tasks.roll,
                 "admin": Tasks.admin,
+                "DM": Tasks.DM,
+                "Jeeves": Tasks.Jeeves,
+                "roll": Tasks.roll,
             }
 
             if ENV == "test":
                 commandDict.update({
                     "Response": Tasks.Response,
+                    "move_interface": Tasks.move_interface,
                 })
 
             try:
@@ -238,6 +243,7 @@ class TextHandler:
         Parameters:
             message: Message to be sent to the interface
         """
+        self.lastOut = message
         self.iface.queues[1].put((message,self.user.interface,self.user.location,self.user.userID))
         if not self.iface.closing:
             self.iface.lastActive = time()
@@ -257,6 +263,10 @@ class TextHandler:
         self.iface.mode = "thinking"
         return response
 
+    def releaseTimeoutLock(self) -> None:
+        """Removes the timeoutlock to allow closing the thread."""
+        self.iface.timeoutLock = False
+
     def setMode(self, mode: str) -> None:
         """Sets the mode of the thread from an external source.
 
@@ -273,89 +283,30 @@ class TextHandler:
         """Sets the timeoutlock to prevent closing the thread."""
         self.iface.timeoutLock = True
 
-    def releaseTimeoutLock(self) -> None:
-        """Removes the timeoutlock to allow closing the thread."""
-        self.iface.timeoutLock = False
+    def updateInterface(self, newInterface: str, newLocation: str) -> None:
+        """Updates the location the user is communicating and send the last message."""
+        self.user.interface = newInterface
+        self.user.location = newLocation
+        if self.iface.mode == "waiting":
+            lastMessage = self.lastOut
+            self.handlePrint("It appears that I was waiting for a response from you "\
+                             f"{self.user.title}.\n"\
+                             "Will you please respond to the last message I sent?")
+            self.handlePrint(lastMessage)
+        else:
+            self.handlePrint(f"Our conversation has been moved successfully {self.user.title}")
 
 class Tasks:
     """Class Docstring.
 
     Functions:
-        Jeeves: Checks the bot state and user information
+        admin: Handles admin requests
         DM: Initializes a Direct Message Conversdation
+        Jeeves: Checks the bot state and user information
+        move_interface: Prompts a user to move change interface if needed
         Response: Tests Creation of sub threads
         roll: Initialized the roller module
-        admin: Handles admin requests
     """
-
-    @staticmethod
-    def Jeeves(_: str, handler: TextHandler) -> str:
-        """Returns a greeting to the user.
-        
-        Parameters:
-            _ (str): The message in from the user
-            handler (TesxHandler): Instance of the text handler
-
-        Returns:
-            _ (str): The massage back out to the user
-        """
-        greeting = day_greeting()
-        return [f"Good {greeting[0]} {handler.user.title}. {greeting[1]}"]
-
-    @staticmethod
-    def DM(content: str, handler: TextHandler) -> str:
-        """Sends a DM to the user for information.
-        
-        Parameters:
-            content (str): The message in from the user
-            handler (TesxHandler): Instance of the text handler
-
-        Returns:
-            _ (str): The massage back out to the user
-        """
-        if len(content) != 1:
-            if UP.getPermission(handler.user.userID) == "Admin":
-                handler.handlePrint(f'DM User:{content[1]}:{handler.user.interface}!:!'\
-                                    'A DM will now be sent')
-                return ""
-        handler.iface.mode = "thinking"
-        userInstance = UPC(handler.user.interface, handler.handleInput, handler.handlePrint)
-        data = handler, day_greeting()[0]
-        handler.iface.thread = Thread(target=userInstance.aboutYou, args = data, daemon=True)
-        handler.iface.thread.start()
-        return ""
-
-    @staticmethod
-    def Response(_: str, handler: TextHandler) -> str:
-        """Creates a thread and asks some quesitons.
-        
-        Parameters:
-            _ (str): The message in from the user
-            handler (TesxHandler): Instance of the text handler
-
-        Returns:
-            _ (str): The massage back out to the user
-        """
-        handler.iface.mode = "thinking"
-        io = handler.handleInput, handler.handlePrint
-        handler.iface.thread = Thread(target=responseTest, args = io, daemon=True)
-        handler.iface.thread.start()
-        return ""
-
-    @staticmethod
-    def roll(content: str, _: TextHandler) -> str:
-        """gets a response from the roller module.
-
-        Parameters:
-            content (str): The message in from the user
-            _ (TextHandler): Instance of the text handler
-
-        Returns:
-            _ (str): The massage back out to the user
-        """
-        if len(content) == 1:
-            content.append("help")
-        return [roller(content[1:])]
 
     @staticmethod
     def admin(content: str, handler: TextHandler) -> str:
@@ -409,6 +360,88 @@ class Tasks:
 
         return""
 
+    @staticmethod
+    def DM(content: str, handler: TextHandler) -> str:
+        """Sends a DM to the user for information.
+        
+        Parameters:
+            content (str): The message in from the user
+            handler (TesxHandler): Instance of the text handler
+
+        Returns:
+            _ (str): The massage back out to the user
+        """
+        if len(content) != 1:
+            if UP.getPermission(handler.user.userID) == "Admin":
+                handler.handlePrint(f'DM User:{content[1]}:{handler.user.interface}!:!'\
+                                    'A DM will now be sent')
+                return ""
+        handler.iface.mode = "thinking"
+        userInstance = UPC(handler.user.interface, handler.handleInput, handler.handlePrint)
+        data = handler, day_greeting()[0]
+        handler.iface.thread = Thread(target=userInstance.aboutYou, args = data, daemon=True)
+        handler.iface.thread.start()
+        return ""
+
+    @staticmethod
+    def Jeeves(_: str, handler: TextHandler) -> str:
+        """Returns a greeting to the user.
+        
+        Parameters:
+            _ (str): The message in from the user
+            handler (TesxHandler): Instance of the text handler
+
+        Returns:
+            _ (str): The massage back out to the user
+        """
+        greeting = day_greeting()
+        return [f"Good {greeting[0]} {handler.user.title}. {greeting[1]}"]
+
+    @staticmethod
+    def move_interface(content: str, handler: TextHandler) -> str:
+        """Starts the process to move a Handler Thread to a new interface"""
+        if len(content) == 1:
+            return ["Close Thread!:!An error occured. Please try again"]
+
+        handler.iface.mode = "thinking"
+        io = handler.handleInput, handler.handlePrint, " ".join(content[1:])
+        handler.iface.thread = Thread(target=interfaceSelection, args = io, daemon=True)
+        handler.iface.thread.start()
+        return ""
+
+    @staticmethod
+    def Response(_: str, handler: TextHandler) -> str:
+        """Creates a thread and asks some quesitons.
+        
+        Parameters:
+            _ (str): The message in from the user
+            handler (TesxHandler): Instance of the text handler
+
+        Returns:
+            _ (str): The massage back out to the user
+        """
+        handler.iface.mode = "thinking"
+        io = handler.handleInput, handler.handlePrint
+        handler.iface.thread = Thread(target=responseTest, args = io, daemon=True)
+        handler.iface.thread.start()
+        return ""
+
+    @staticmethod
+    def roll(content: str, _: TextHandler) -> str:
+        """gets a response from the roller module.
+
+        Parameters:
+            content (str): The message in from the user
+            _ (TextHandler): Instance of the text handler
+
+        Returns:
+            _ (str): The massage back out to the user
+        """
+        if len(content) == 1:
+            content.append("help")
+        return [roller(content[1:])]
+
+
 # Main Function
 def main():
     """Launches the TextHandler class and contains the run loop."""
@@ -448,6 +481,44 @@ def day_greeting() -> list[str]:
         greeting = "Will this be another long night?"
 
     return [timePhrase, greeting]
+
+def interfaceSelection(handleIn, handleOut, sessions):
+    """Tells the Control to transitions Handlers to a new interface on User Selection.
+    
+    Parameters:
+        handleIn (Input): Custom Input Statement for the Text Handler
+        handleOut (Print): Custom Output Statement for the Text Handler
+        sessions (str): A list of sessions started by the same user
+    """
+    response = handleIn("It appears that you already have an open line of dialog\n"\
+                        "Would you like to transition it to this new Interface? (Y/N)").upper()
+    if response == "N":
+        handleOut("I will not move your conversation over.\n"\
+                  "Please enter your original command again.")
+        return
+    sessionList = sessions.split(",")
+    if len(sessionList) == 2:
+        sessionChoice = sessionList[0]
+    else:
+        sessionString = ""
+        count = 0
+        for session in sessionList:
+            if session == "":
+                continue
+            count += 1
+            sessionString += f"\n{count}: {session.split("_")[1]}"
+        handleOut(f"You have a conversation in the following interfaces:{sessionString}")
+        selection = int(handleIn("Which session do you want to pull over? (number)"))
+        try:
+            sessionChoice = sessionList[selection - 1]
+        except IndexError:
+            handleOut("Close Thread!:!An incorrect selection was made.\n"\
+                      "Please send another message to start a new dialog.")
+            return
+        handleOut(f"move_thread:{sessionChoice}!:!"\
+                  f"Very good, I will move our {sessionChoice.split("_")[1]} conversation here.")
+
+    handleOut(f"move_interface:{sessionChoice}!:!Your session will be moved over.")
 
 def responseTest(handleIn, handleOut):
     """Tests the Response processing of the text handler.
