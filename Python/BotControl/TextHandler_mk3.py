@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 5/10/2024
-### Updated: 2/1/2025
+### Updated: 4/1/2025
 ### Windows 11
 ### Python command line, Notepad, IDLE
 ### TextHandler_mk2.py
@@ -218,12 +218,12 @@ class TextHandler:
                 "DM": Tasks.DM,
                 "Jeeves": Tasks.Jeeves,
                 "roll": Tasks.roll,
+                "move_interface": Tasks.move_interface,
             }
 
             if ENV == "test":
                 commandDict.update({
                     "Response": Tasks.Response,
-                    "move_interface": Tasks.move_interface,
                 })
 
             try:
@@ -506,7 +506,7 @@ def interfaceSelection(handleIn, handleOut, sessions):
             if session == "":
                 continue
             count += 1
-            sessionString += f"\n{count}: {session.split("_")[1]}"
+            sessionString += f"\n{count}: {session.split('_')[1]}"
         handleOut(f"You have a conversation in the following interfaces:{sessionString}")
         selection = int(handleIn("Which session do you want to pull over? (number)"))
         try:
@@ -516,7 +516,7 @@ def interfaceSelection(handleIn, handleOut, sessions):
                       "Please send another message to start a new dialog.")
             return
         handleOut(f"move_thread:{sessionChoice}!:!"\
-                  f"Very good, I will move our {sessionChoice.split("_")[1]} conversation here.")
+                  f"Very good, I will move our {sessionChoice.split('_')[1]} conversation here.")
 
     handleOut(f"move_interface:{sessionChoice}!:!Your session will be moved over.")
 
