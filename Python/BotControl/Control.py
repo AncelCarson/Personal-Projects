@@ -79,7 +79,7 @@ def main():
       for session in activeSessions:
          if session == sessionID:
             continue
-         if userID in session:
+         if str(userID) in session:
             sessionList += f"{session},"
       return sessionList
 
@@ -143,11 +143,11 @@ def main():
          userName = UP.getName(userID)
       else:
          userName = "new user"
-      sessionID = f"{ctx[0]}_{ctx[2]}_{ctx[3]}"
+      sessionID = f"{ctx[0]}_{ctx[2]}_{str(ctx[3]).split(' ', maxsplit=1)[0]}"
 
       if sessionID not in activeSessions:
          _createSession(sessionID, ctx, userName, userID)
-         if ctx[2] != "Discord" or "Direct Message" in str(ctx[3]):
+         if ctx[2] != "Discord" or "Direct" in str(ctx[3]):
             sessionList = _findUserSessions(sessionID, ctx[0])
             if sessionList != "":
                message = f"move_interface {sessionList}"
@@ -169,7 +169,7 @@ def main():
       ctx = list(output_queue.get())
       # ctx = Message, Destination, Location, UserID
       if "!:!" in ctx[0]:
-         sessionID = f"{ctx[3]}_{ctx[1]}_{ctx[2]}"
+         sessionID = f"{ctx[3]}_{ctx[1]}_{str(ctx[2]).split(' ', maxsplit=1)[0]}"
          flag,msg = ctx[0].split("!:!")
          _flagAction(flag,sessionID)
          if msg == "":
