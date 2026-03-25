@@ -3,7 +3,7 @@
 
 ### Ancel Carson
 ### Created: 12/3/2023
-### Updated: 24/2/2025
+### Updated: 15/3/2026
 ### Windows 11
 ### Python command line, VS Code, IDLE
 ### Roller.py
@@ -180,6 +180,16 @@ def roll(num: int, die: int):
    for _ in range(int(num)):
       rolls.append(rn(1, high = int(die)+1))
    return [rolls,die]
+
+def straightRoll(request: str) -> int:
+   """Takes in an unformatted string and returns the number value at the end.
+   
+   Parameters:
+      request: User input for a single die roll
+      
+   Returns:
+      roll: The number value of the dice rolled"""
+   return int(roller(request.split(" ")).split("\n")[-2])
 
 def dropLow(rolls: list[int], num: int):
    """Drops the lowest value in the list of rolls based on a given number.
