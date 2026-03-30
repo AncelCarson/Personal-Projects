@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Main {
+public class Cheat_Sheet {
     public static void main(String[] args) {
         // Basics: Printing and Input
         System.out.println("Hello, World!");
